@@ -16,7 +16,6 @@ import javafx.scene.transform.Scale;
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.viewmodel.AppViewModel;
-import org.mohammad.gol.viewmodel.ApplicationState;
 import org.mohammad.gol.viewmodel.BoardViewModel;
 import org.mohammad.gol.viewmodel.EditorViewModel;
 
@@ -31,8 +30,9 @@ public class MainView extends VBox {
     private InfoBar infoBar;
 
 
-
-    public MainView(EditorViewModel editorViewModel,AppViewModel appViewModel, BoardViewModel boardViewModel){
+    public MainView(EditorViewModel editorViewModel,
+                    AppViewModel appViewModel,
+                    BoardViewModel boardViewModel, SimulationViewModel simulationViewModel){
         this.editorViewModel = editorViewModel;
         this.boardViewModel = boardViewModel;
         this.boardViewModel.getBoardProperty().listenTo(this::onChangedBoard);
@@ -54,7 +54,7 @@ public class MainView extends VBox {
         spacer.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         VBox.setVgrow(spacer, Priority.ALWAYS);
 
-        Toolbar toolbar = new Toolbar(editorViewModel,appViewModel, boardViewModel);
+        Toolbar toolbar = new Toolbar(simulationViewModel, editorViewModel,appViewModel);
         infoBar = new InfoBar(editorViewModel);
         infoBar.setCursorFormat(0,0);
 

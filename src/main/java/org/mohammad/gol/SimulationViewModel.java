@@ -8,17 +8,23 @@ import org.mohammad.gol.viewmodel.AppViewModel;
 import org.mohammad.gol.viewmodel.ApplicationState;
 import org.mohammad.gol.viewmodel.BoardViewModel;
 
-public class Simulator {
+public class SimulationViewModel {
 
     private Timeline timeline;
     private BoardViewModel boardViewModel;
     private Simulation simulation;
 
-    public Simulator(BoardViewModel boardViewModel, Simulation simulation){
+
+    public SimulationViewModel(BoardViewModel boardViewModel){
         this.boardViewModel = boardViewModel;
-        this.simulation = simulation;
         timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> handleStep()));
         timeline.setCycleCount(Timeline.INDEFINITE);
+    }
+
+    public void onChangedAppState(ApplicationState state){
+        if(state == ApplicationState.SIMULATING){
+            this.simulation =  new Simulation(boardViewModel.getBoard(), new StandardRule());
+        }
     }
 
 
@@ -28,14 +34,9 @@ public class Simulator {
     }
 
 
-    public void start(){
+    public void start(){ this.timeline.play(); }
 
-            this.timeline.play();
-    }
-
-    public void stop(){
-        this.timeline.stop();
-    }
+    public void stop(){this.timeline.stop(); }
 
 
 
