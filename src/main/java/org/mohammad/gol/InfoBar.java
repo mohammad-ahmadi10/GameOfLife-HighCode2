@@ -11,11 +11,8 @@ public class InfoBar extends HBox {
 
     private Label drawModeLbl;
     private Label cursorLbl;
-    private EditorViewModel editorViewModel;
 
-    public InfoBar(EditorViewModel editorViewModel){
-        this.editorViewModel = editorViewModel;
-        this.editorViewModel.getCellStateProperty().listenTo(this::setDrawModeFormat);
+    public InfoBar(){
         drawModeLbl = new Label();
         cursorLbl = new Label();
 
