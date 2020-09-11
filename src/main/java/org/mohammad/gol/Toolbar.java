@@ -6,20 +6,20 @@ import javafx.scene.control.ToolBar;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.viewmodel.AppViewModel;
 import org.mohammad.gol.viewmodel.ApplicationState;
-import org.mohammad.gol.viewmodel.BoardViewModel;
+import org.mohammad.gol.viewmodel.EditorViewModel;
 
 public class Toolbar extends ToolBar {
 
-    private Simulator simulator;
+    private SimulationViewModel simulationViewModel;
 
-    private MainView mainView;
     private AppViewModel appViewModel;
-    private BoardViewModel boardViewModel;
+    private EditorViewModel editorViewModel;
+    private boolean isPlaying = false;
 
-    public Toolbar(MainView mainView, AppViewModel appViewModel, BoardViewModel boardViewModel){
-        this.mainView = mainView;
+    public Toolbar(SimulationViewModel simulationViewModel, EditorViewModel editorViewModel, AppViewModel appViewModel){
+        this.simulationViewModel = simulationViewModel;
+        this.editorViewModel = editorViewModel;
         this.appViewModel = appViewModel;
-        this.boardViewModel = boardViewModel;
 
         Button drawBtn = new Button("Draw");
         Button eraseBtn = new Button("Erase");
@@ -37,47 +37,41 @@ public class Toolbar extends ToolBar {
         startBtn.setOnAction(this::handleStart);
         stopBtn.setOnAction(this::handleStop);
         this.getItems().setAll(drawBtn, eraseBtn,resetBtn, stepBtn, startBtn, stopBtn);
-
     }
 
     private void handleStop(ActionEvent event) {
-        System.out.println("stop pressed");
-        this.simulator.stop();
+            System.out.println("stop pressed");
+            isPlaying = false;
+            this.simulationViewModel.stop();
     }
 
 
     private void handleStart(ActionEvent event) {
-        changeToSimu();
-        this.simulator.start();
+        if(isPlaying == true)
+            return;
+        isPlaying = true;
+        this.appViewModel.getAppStateProperty().setValue(ApplicationState.SIMULATING);
+        this.simulationViewModel.start();
     }
-
-
-    private void changeToSimu(){
-        if(this.appViewModel.getAppStateProperty().getValue() != ApplicationState.SIMULATING){
-            this.appViewModel.getAppStateProperty().setValue(ApplicationState.SIMULATING);
-        }
-        this.simulator = new Simulator(boardViewModel, mainView.getSimulation());
-
-    }
-
-
     private void handleStep(ActionEvent event) {
-        changeToSimu();
-        this.simulator.handleStep();
-
+        this.appViewModel.getAppStateProperty().setValue(ApplicationState.SIMULATING);
+        this.simulationViewModel.handleStep();
     }
 
     private void handleReset(ActionEvent event) {
             this.appViewModel.getAppStateProperty().setValue(ApplicationState.EDITING);
-            this.simulator = null;
+            this.simulationViewModel.stop();
+            isPlaying = false;
     }
 
     private void handleDraw(ActionEvent event) {
-            this.mainView.setDrawMode(CellState.ALIVE.ALIVE);
+            this.editorViewModel.getCellStateProperty().setValue(CellState.ALIVE);
     }
 
     private void handleErese(ActionEvent event) {
-            this.mainView.setDrawMode(CellState.DEAD);
+        this.editorViewModel.getCellStateProperty().setValue(CellState.DEAD);
     }
+
+
 
 }

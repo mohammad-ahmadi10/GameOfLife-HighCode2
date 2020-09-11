@@ -5,9 +5,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.BoundedBoard;
+import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.viewmodel.AppViewModel;
-import org.mohammad.gol.viewmodel.ApplicationState;
 import org.mohammad.gol.viewmodel.BoardViewModel;
+import org.mohammad.gol.viewmodel.EditorViewModel;
 
 /**
  * JavaFX App
@@ -19,13 +20,20 @@ public class App extends Application {
         Board initBoard = new BoundedBoard(10,10);
         AppViewModel appViewModel = new AppViewModel();
         BoardViewModel boardViewModel = new BoardViewModel(initBoard);
+        EditorViewModel editorViewModel = new EditorViewModel(boardViewModel, CellState.ALIVE);
+        editorViewModel.setBoard(initBoard);
+
+        SimulationViewModel simulationViewModel = new SimulationViewModel(boardViewModel);
+        appViewModel.getAppStateProperty().listenTo(editorViewModel::onAppStateChanged);
+        appViewModel.getAppStateProperty().listenTo(simulationViewModel::onChangedAppState);
 
 
-        MainView mainView = new MainView(initBoard, appViewModel, boardViewModel);
+        MainView mainView = new MainView(editorViewModel, appViewModel, boardViewModel, simulationViewModel);
 
         Scene scene = new Scene(mainView, 640, 480);
         stage.setScene(scene);
         stage.show();
+
 
         boardViewModel.getBoardProperty().setValue(initBoard);
     }

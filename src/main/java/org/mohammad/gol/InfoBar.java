@@ -5,13 +5,17 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import org.mohammad.gol.model.CellState;
+import org.mohammad.gol.viewmodel.EditorViewModel;
 
 public class InfoBar extends HBox {
 
     private Label drawModeLbl;
     private Label cursorLbl;
+    private EditorViewModel editorViewModel;
 
-    public InfoBar(){
+    public InfoBar(EditorViewModel editorViewModel){
+        this.editorViewModel = editorViewModel;
+        this.editorViewModel.getCellStateProperty().listenTo(this::setDrawModeFormat);
         drawModeLbl = new Label();
         cursorLbl = new Label();
 
