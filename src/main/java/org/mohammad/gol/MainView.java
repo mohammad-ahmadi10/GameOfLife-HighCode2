@@ -15,28 +15,30 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Scale;
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.CellState;
+import org.mohammad.gol.viewmodel.AppViewModel;
+import org.mohammad.gol.viewmodel.ApplicationState;
 
 public class MainView extends VBox {
 
-    public static final int EDITING = 0;
-    public static final int SIMULATING = 1;
 
 
     private Canvas canvas;
     private Simulation simulation;
     private Board initBoard;
+    private AppViewModel appViewModel;
     private Affine affine;
     private InfoBar infoBar;
 
 
     private CellState drawMode = CellState.ALIVE;
 
-    private int applicationState = EDITING;
 
+    private boolean isDrawingEnable = true;
 
-    public MainView(Board initBoard){
+    public MainView(Board initBoard, AppViewModel appViewModel){
         this.initBoard = initBoard;
-
+        this.appViewModel = appViewModel;
+        this.appViewModel.getAppStateProperty().listenTo(this::onChangedAppState);
         this.setOnKeyPressed(this::keyPressedHandle);
 
         this.canvas = new Canvas(400, 400);
@@ -54,12 +56,24 @@ public class MainView extends VBox {
         spacer.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         VBox.setVgrow(spacer, Priority.ALWAYS);
 
-        Toolbar toolbar = new Toolbar(this);
+        Toolbar toolbar = new Toolbar(this, appViewModel);
         infoBar = new InfoBar();
         infoBar.setDrawModeFormat(CellState.ALIVE);
         infoBar.setCursorFormat(0,0);
 
         this.getChildren().addAll(toolbar, canvas , spacer,  infoBar);
+    }
+
+    private void onChangedAppState(ApplicationState state) {
+        switch (state){
+            case EDITING -> {
+                isDrawingEnable = true;
+            }
+            case SIMULATING -> {
+                isDrawingEnable = false;
+                this.simulation = new Simulation(this.initBoard, new StandardRule());
+            }
+        }
     }
 
 
@@ -79,7 +93,7 @@ public class MainView extends VBox {
     }
 
     private void handleDraw(MouseEvent event) {
-        if(applicationState == SIMULATING)
+        if(!isDrawingEnable)
             return;
 
         Point2D simCord = simCoordinate(event);
@@ -111,7 +125,7 @@ public class MainView extends VBox {
         gc.setFill(Color.LIGHTGRAY);
         gc.fillRect(0,0,this.canvas.getWidth(), this.canvas.getHeight());
 
-        if(this.applicationState == EDITING)
+        if(isDrawingEnable)
                 drawSimulation(this.initBoard);
         else drawSimulation(this.simulation.getBoard());
 
@@ -143,28 +157,9 @@ public class MainView extends VBox {
         return simulation;
     }
 
-    public CellState getDrawMode() {
-        return drawMode;
-    }
-
     public void setDrawMode(CellState newDrawMode) {
         this.drawMode = newDrawMode;
         this.infoBar.setDrawModeFormat(newDrawMode);
     }
-
-    public int getApplicationState() {
-        return applicationState;
-    }
-
-    public void setApplicationState(int newApplicationState) {
-        if(newApplicationState == this.applicationState)
-            return;
-
-        this.applicationState = newApplicationState;
-
-        if(this.applicationState == SIMULATING)
-            this.simulation = new Simulation(this.initBoard, new StandardRule());
-    }
-
 
 }
