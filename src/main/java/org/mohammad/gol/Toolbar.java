@@ -7,17 +7,18 @@ import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.viewmodel.AppViewModel;
 import org.mohammad.gol.viewmodel.ApplicationState;
 import org.mohammad.gol.viewmodel.BoardViewModel;
+import org.mohammad.gol.viewmodel.EditorViewModel;
 
 public class Toolbar extends ToolBar {
 
     private Simulator simulator;
 
-    private MainView mainView;
     private AppViewModel appViewModel;
     private BoardViewModel boardViewModel;
+    private EditorViewModel editorViewModel;
 
-    public Toolbar(MainView mainView, AppViewModel appViewModel, BoardViewModel boardViewModel){
-        this.mainView = mainView;
+    public Toolbar(EditorViewModel editorViewModel, AppViewModel appViewModel, BoardViewModel boardViewModel){
+        this.editorViewModel = editorViewModel;
         this.appViewModel = appViewModel;
         this.boardViewModel = boardViewModel;
 
@@ -39,24 +40,35 @@ public class Toolbar extends ToolBar {
         this.getItems().setAll(drawBtn, eraseBtn,resetBtn, stepBtn, startBtn, stopBtn);
 
     }
+    private boolean isPlaying = false;
 
     private void handleStop(ActionEvent event) {
-        System.out.println("stop pressed");
-        this.simulator.stop();
+            System.out.println("stop pressed");
+            isPlaying = false;
+            this.simulator.stop();
+
     }
 
 
     private void handleStart(ActionEvent event) {
+        if(isPlaying == true)
+            return;
         changeToSimu();
+        isPlaying = true;
         this.simulator.start();
     }
 
 
+
+
+    Simulation simulation;
     private void changeToSimu(){
         if(this.appViewModel.getAppStateProperty().getValue() != ApplicationState.SIMULATING){
             this.appViewModel.getAppStateProperty().setValue(ApplicationState.SIMULATING);
+            simulation =  new Simulation(editorViewModel.getBoard(), new StandardRule());
         }
-        this.simulator = new Simulator(boardViewModel, mainView.getSimulation());
+
+        this.simulator = new Simulator(boardViewModel, simulation);
 
     }
 
@@ -65,19 +77,24 @@ public class Toolbar extends ToolBar {
         changeToSimu();
         this.simulator.handleStep();
 
+
+
     }
 
     private void handleReset(ActionEvent event) {
             this.appViewModel.getAppStateProperty().setValue(ApplicationState.EDITING);
+            this.simulator.stop();
             this.simulator = null;
     }
 
     private void handleDraw(ActionEvent event) {
-            this.mainView.setDrawMode(CellState.ALIVE.ALIVE);
+            this.editorViewModel.getCellStateProperty().setValue(CellState.ALIVE);
     }
 
     private void handleErese(ActionEvent event) {
-            this.mainView.setDrawMode(CellState.DEAD);
+        this.editorViewModel.getCellStateProperty().setValue(CellState.DEAD);
     }
+
+
 
 }

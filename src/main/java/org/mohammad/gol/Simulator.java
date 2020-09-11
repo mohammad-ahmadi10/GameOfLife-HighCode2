@@ -29,6 +29,7 @@ public class Simulator {
 
 
     public void start(){
+
             this.timeline.play();
     }
 
