@@ -6,8 +6,8 @@ public class AppViewModel {
 
     private Property<ApplicationState> appStateProperty;
 
-    public AppViewModel(ApplicationState state) {
-        appStateProperty = new Property<>(state);
+    public AppViewModel() {
+        appStateProperty = new Property<>();
     }
 
 

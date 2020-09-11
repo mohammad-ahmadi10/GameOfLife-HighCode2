@@ -6,6 +6,7 @@ import javafx.scene.control.ToolBar;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.viewmodel.AppViewModel;
 import org.mohammad.gol.viewmodel.ApplicationState;
+import org.mohammad.gol.viewmodel.BoardViewModel;
 
 public class Toolbar extends ToolBar {
 
@@ -13,10 +14,12 @@ public class Toolbar extends ToolBar {
 
     private MainView mainView;
     private AppViewModel appViewModel;
+    private BoardViewModel boardViewModel;
 
-    public Toolbar(MainView mainView, AppViewModel appViewModel){
+    public Toolbar(MainView mainView, AppViewModel appViewModel, BoardViewModel boardViewModel){
         this.mainView = mainView;
         this.appViewModel = appViewModel;
+        this.boardViewModel = boardViewModel;
 
         Button drawBtn = new Button("Draw");
         Button eraseBtn = new Button("Erase");
@@ -42,20 +45,31 @@ public class Toolbar extends ToolBar {
         this.simulator.stop();
     }
 
+
     private void handleStart(ActionEvent event) {
         changeToSimu();
         this.simulator.start();
     }
 
+
     private void changeToSimu(){
-        this.appViewModel.getAppStateProperty().setValue(ApplicationState.SIMULATING);
-        this.simulator = new Simulator(mainView, appViewModel);
+        if(this.appViewModel.getAppStateProperty().getValue() != ApplicationState.SIMULATING){
+            this.appViewModel.getAppStateProperty().setValue(ApplicationState.SIMULATING);
+        }
+        this.simulator = new Simulator(boardViewModel, mainView.getSimulation());
+
+    }
+
+
+    private void handleStep(ActionEvent event) {
+        changeToSimu();
+        this.simulator.handleStep();
+
     }
 
     private void handleReset(ActionEvent event) {
             this.appViewModel.getAppStateProperty().setValue(ApplicationState.EDITING);
             this.simulator = null;
-            this.mainView.draw();
     }
 
     private void handleDraw(ActionEvent event) {
@@ -64,12 +78,6 @@ public class Toolbar extends ToolBar {
 
     private void handleErese(ActionEvent event) {
             this.mainView.setDrawMode(CellState.DEAD);
-    }
-
-    private void handleStep(ActionEvent event) {
-        changeToSimu();
-        this.mainView.getSimulation().step();
-        this.mainView.draw();
     }
 
 }

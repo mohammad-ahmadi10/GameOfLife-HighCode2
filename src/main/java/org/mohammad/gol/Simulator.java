@@ -6,28 +6,27 @@ import javafx.event.ActionEvent;
 import javafx.util.Duration;
 import org.mohammad.gol.viewmodel.AppViewModel;
 import org.mohammad.gol.viewmodel.ApplicationState;
+import org.mohammad.gol.viewmodel.BoardViewModel;
 
 public class Simulator {
 
     private Timeline timeline;
-    private MainView mainView;
-    private AppViewModel appViewModel;
+    private BoardViewModel boardViewModel;
+    private Simulation simulation;
 
-    public Simulator(MainView mainView, AppViewModel appViewModel){
-        this.mainView = mainView;
-        this.appViewModel = appViewModel;
-        timeline = new Timeline(new KeyFrame(Duration.millis(500), this::handleStep));
+    public Simulator(BoardViewModel boardViewModel, Simulation simulation){
+        this.boardViewModel = boardViewModel;
+        this.simulation = simulation;
+        timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> handleStep()));
         timeline.setCycleCount(Timeline.INDEFINITE);
-
     }
 
-    private void handleStep(ActionEvent event){
-        if(this.appViewModel.getAppStateProperty().getValue() == ApplicationState.SIMULATING){
-            this.mainView.getSimulation().step();
-            this.mainView.draw();
-        }
 
+    public void handleStep(){
+            this.simulation.step();
+            this.boardViewModel.getBoardProperty().setValue(this.simulation.getBoard());
     }
+
 
     public void start(){
             this.timeline.play();
