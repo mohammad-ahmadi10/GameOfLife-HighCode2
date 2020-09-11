@@ -17,6 +17,7 @@ import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.viewmodel.AppViewModel;
 import org.mohammad.gol.viewmodel.ApplicationState;
+import org.mohammad.gol.viewmodel.BoardViewModel;
 
 public class MainView extends VBox {
 
@@ -26,6 +27,7 @@ public class MainView extends VBox {
     private Simulation simulation;
     private Board initBoard;
     private AppViewModel appViewModel;
+    private BoardViewModel boardViewModel;
     private Affine affine;
     private InfoBar infoBar;
 
@@ -35,9 +37,11 @@ public class MainView extends VBox {
 
     private boolean isDrawingEnable = true;
 
-    public MainView(Board initBoard, AppViewModel appViewModel){
+    public MainView(Board initBoard, AppViewModel appViewModel, BoardViewModel boardViewModel){
         this.initBoard = initBoard;
         this.appViewModel = appViewModel;
+        this.boardViewModel = boardViewModel;
+        this.boardViewModel.getBoardProperty().listenTo(this::onChangedBoard);
         this.appViewModel.getAppStateProperty().listenTo(this::onChangedAppState);
         this.setOnKeyPressed(this::keyPressedHandle);
 
@@ -56,7 +60,7 @@ public class MainView extends VBox {
         spacer.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         VBox.setVgrow(spacer, Priority.ALWAYS);
 
-        Toolbar toolbar = new Toolbar(this, appViewModel);
+        Toolbar toolbar = new Toolbar(this, appViewModel, boardViewModel);
         infoBar = new InfoBar();
         infoBar.setDrawModeFormat(CellState.ALIVE);
         infoBar.setCursorFormat(0,0);
@@ -68,6 +72,7 @@ public class MainView extends VBox {
         switch (state){
             case EDITING -> {
                 isDrawingEnable = true;
+                this.boardViewModel.getBoardProperty().setValue(this.initBoard);
             }
             case SIMULATING -> {
                 isDrawingEnable = false;
@@ -101,8 +106,13 @@ public class MainView extends VBox {
         int simY = (int) simCord.getY();
 
         this.initBoard.setState(simX,simY, drawMode);
+        this.boardViewModel.getBoardProperty().setValue(this.initBoard);
+    }
+
+    private void onChangedBoard(Board board) {
         draw();
     }
+
 
     private Point2D simCoordinate(MouseEvent event){
         double  mouseX = event.getX();
@@ -117,6 +127,7 @@ public class MainView extends VBox {
             throw new RuntimeException("Non invertable transform");
         }
     }
+
 
     public void draw(){
         GraphicsContext gc = this.canvas.getGraphicsContext2D();
@@ -139,6 +150,7 @@ public class MainView extends VBox {
             gc.strokeLine(0,y,this.canvas.getWidth(), y);
         }
     }
+
 
     private void drawSimulation(Board board){
         GraphicsContext gc = this.canvas.getGraphicsContext2D();

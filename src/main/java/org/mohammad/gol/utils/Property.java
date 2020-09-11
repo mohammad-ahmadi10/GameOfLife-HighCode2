@@ -23,10 +23,13 @@ public class Property<T> {
     }
 
     public void setValue(T value){
-        if(value != this.value){
+//
+//        if(value == this.value){
+//            return;
+//        }
+
             this.value = value;
             notifyAllListener(this.value);
-        }
 
 
     }
