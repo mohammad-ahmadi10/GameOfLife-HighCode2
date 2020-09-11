@@ -4,14 +4,19 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 import org.mohammad.gol.model.CellState;
+import org.mohammad.gol.viewmodel.AppViewModel;
+import org.mohammad.gol.viewmodel.ApplicationState;
 
 public class Toolbar extends ToolBar {
 
     private Simulator simulator;
 
     private MainView mainView;
-    public Toolbar(MainView mainView){
+    private AppViewModel appViewModel;
+
+    public Toolbar(MainView mainView, AppViewModel appViewModel){
         this.mainView = mainView;
+        this.appViewModel = appViewModel;
 
         Button drawBtn = new Button("Draw");
         Button eraseBtn = new Button("Erase");
@@ -43,12 +48,12 @@ public class Toolbar extends ToolBar {
     }
 
     private void changeToSimu(){
-        this.mainView.setApplicationState(MainView.SIMULATING);
-        this.simulator = new Simulator(mainView, mainView.getSimulation());
+        this.appViewModel.getAppStateProperty().setValue(ApplicationState.SIMULATING);
+        this.simulator = new Simulator(mainView, appViewModel);
     }
 
     private void handleReset(ActionEvent event) {
-            this.mainView.setApplicationState(MainView.EDITING);
+            this.appViewModel.getAppStateProperty().setValue(ApplicationState.EDITING);
             this.simulator = null;
             this.mainView.draw();
     }
