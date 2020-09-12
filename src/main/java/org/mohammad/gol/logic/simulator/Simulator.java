@@ -1,25 +1,30 @@
-package org.mohammad.gol.logic;
+package org.mohammad.gol.logic.simulator;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-import org.mohammad.gol.model.Board;
+import org.mohammad.gol.logic.AppStateManager;
+import org.mohammad.gol.logic.ApplicationState;
 import org.mohammad.gol.model.Simulation;
 import org.mohammad.gol.model.StandardRule;
-import org.mohammad.gol.utils.Property;
+import org.mohammad.gol.state.SimulatorState;
+
 
 public class Simulator {
 
     private final Timeline timeline;
     private final AppStateManager appStateManager;
     private Simulation simulation;
+
     private boolean isPlaying = false;
 
-    private final Property<Board> initBoard = new Property<>();
-    private final Property<Board> curBoard = new Property<>();
+    private final SimulatorState simulatorState;
+    private boolean isReset = true;
 
-    public Simulator( AppStateManager appStateManager){
+
+    public Simulator(AppStateManager appStateManager, SimulatorState simulatorState){
         this.appStateManager = appStateManager;
+        this.simulatorState = simulatorState;
         timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> handleStep()));
         timeline.setCycleCount(Timeline.INDEFINITE);
     }
@@ -34,17 +39,22 @@ public class Simulator {
     }
 
     private void reset() {
+        isReset = true;
         stop();
         appStateManager.getAppStateProperty().setValue(ApplicationState.EDITING);
     }
 
     public void handleStep(){
-        if(appStateManager.getAppStateProperty().getValue() != ApplicationState.SIMULATING){
+        if(isReset){
+            isReset = false;
             appStateManager.getAppStateProperty().setValue(ApplicationState.SIMULATING);
-            this.simulation =  new Simulation(initBoard.getValue(), new StandardRule());
+            this.simulation =  new Simulation(simulatorState.getCurBoard().getValue(), new StandardRule());
         }
             this.simulation.step();
-            this.curBoard.setValue(this.simulation.getBoard());
+
+            SimulatorStateCommand command = (state) ->
+                    state.getCurBoard().setValue(this.simulation.getBoard());
+            command.execute(this.simulatorState);
     }
 
 
@@ -59,13 +69,5 @@ public class Simulator {
     public void stop(){
         this.timeline.stop();
         isPlaying = false;
-    }
-
-    public Property<Board> getInitBoard() {
-        return initBoard;
-    }
-
-    public Property<Board> getCurBoard() {
-        return curBoard;
     }
 }

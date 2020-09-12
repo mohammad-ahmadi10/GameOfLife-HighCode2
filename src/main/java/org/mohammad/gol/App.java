@@ -4,9 +4,15 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.mohammad.gol.logic.*;
+import org.mohammad.gol.logic.editor.CursorEvent;
+import org.mohammad.gol.logic.editor.DrawModeEvent;
+import org.mohammad.gol.logic.editor.Editor;
+import org.mohammad.gol.logic.simulator.SimulationEvent;
+import org.mohammad.gol.logic.simulator.Simulator;
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.BoundedBoard;
-import org.mohammad.gol.model.CellState;
+import org.mohammad.gol.state.EditorState;
+import org.mohammad.gol.state.SimulatorState;
 import org.mohammad.gol.utils.event.EventBus;
 import org.mohammad.gol.view.*;
 import org.mohammad.gol.viewmodel.*;
@@ -26,31 +32,41 @@ public class App extends Application {
 
         InfoBarViewModel infoBarViewModel = new InfoBarViewModel();
 
-        Simulator simulator = new Simulator(appStateManager);
+        SimulatorState simulatorState = new SimulatorState(initBoard);
+        Simulator simulator = new Simulator(appStateManager, simulatorState);
         eventBus.addListener(SimulationEvent.class, simulator::handleType);
 
-        simulator.getCurBoard().listenTo(simulationBoard ->
+        simulatorState.getCurBoard().listenTo(simulationBoard ->
                 boardViewModel.getBoardProperty().setValue(simulationBoard)
         );
 
-        Editor editor = new Editor(initBoard, CellState.ALIVE);
-        editor.getCellPosProperty().listenTo(cellPos ->
+        EditorState editorState = new EditorState(initBoard);
+
+        Editor editor = new Editor(editorState);
+        editorState.getCellPosProperty().listenTo(cellPos ->
                 boardViewModel.getCellPosProperty().setValue(cellPos));
 
-        editor.getBoardProperty().listenTo(editorBoard ->{
-            simulator.getInitBoard().setValue(editorBoard);
+        editorState.getBoardProperty().listenTo(editorBoard ->{
+            simulatorState.getCurBoard().setValue(editorBoard);
             boardViewModel.getBoardProperty().setValue(editorBoard);
         });
 
-        editor.getCellPosProperty().listenTo(cellPos ->
+        editorState.getCellPosProperty().listenTo(cellPos ->
                 infoBarViewModel.getCellPostionProperty().setValue(cellPos)
         );
-        editor.getCellStateProperty().listenTo(cellState ->
+        editorState.getCellStateProperty().listenTo(cellState ->
                 infoBarViewModel.getCellStateProperty().setValue(cellState)
                 );
 
 
         appStateManager.getAppStateProperty().listenTo(editor::onAppStateChanged);
+        appStateManager.getAppStateProperty().listenTo(appState ->{
+            if (appState == ApplicationState.EDITING)
+                boardViewModel.getBoardProperty().setValue(editorState.getBoardProperty().getValue());
+        });
+
+
+
         eventBus.addListener(CursorEvent.class, editor::handle);
         eventBus.addListener(DrawModeEvent.class, editor::handle);
 
@@ -74,8 +90,8 @@ public class App extends Application {
 
 
         boardViewModel.getBoardProperty().listenTo(canvas::draw);
-        editor.getCellPosProperty().listenTo(e -> canvas.draw(boardViewModel.getBoardProperty().getValue()));
-        editor.getCellPosProperty().listenTo(infoBar::setCursorFormat);
+        editorState.getCellPosProperty().listenTo(e -> canvas.draw(boardViewModel.getBoardProperty().getValue()));
+        editorState.getCellPosProperty().listenTo(infoBar::setCursorFormat);
 
 
 

@@ -1,4 +1,4 @@
-package org.mohammad.gol.logic;
+package org.mohammad.gol.logic.simulator;
 
 import org.mohammad.gol.utils.event.Event;
 
@@ -11,7 +11,7 @@ public class SimulationEvent implements Event {
         REST
     }
 
-    private Type type;
+    private final Type type;
 
     public SimulationEvent(Type type) {
         this.type = type;

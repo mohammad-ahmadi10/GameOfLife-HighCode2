@@ -14,8 +14,7 @@ import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.utils.CellPostion;
 import org.mohammad.gol.utils.event.EventBus;
 import org.mohammad.gol.viewmodel.BoardViewModel;
-import org.mohammad.gol.logic.CursorEvent;
-import org.mohammad.gol.logic.Editor;
+import org.mohammad.gol.logic.editor.CursorEvent;
 
 public class SimulationCanvas extends Pane {
 
