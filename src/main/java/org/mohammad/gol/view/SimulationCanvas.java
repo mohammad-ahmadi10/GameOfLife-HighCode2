@@ -21,14 +21,12 @@ public class SimulationCanvas extends Pane {
 
     private Canvas canvas;
     private Affine affine;
-    private Editor editor;
     private BoardViewModel boardViewModel;
     private EventBus eventBus;
 
 
-    public SimulationCanvas(Editor editor, BoardViewModel boardViewModel,
+    public SimulationCanvas( BoardViewModel boardViewModel,
                             EventBus eventBus) {
-        this.editor = editor;
 
         this.boardViewModel = boardViewModel;
         this.eventBus = eventBus;
@@ -106,9 +104,9 @@ public class SimulationCanvas extends Pane {
         this.drawSimulation(board);
 
 
-        if(editor.getCellPosProperty().isPresent()){
+        if(boardViewModel.getCellPosProperty().isPresent()){
             gc.setFill(new Color(0.3,0.3,0.3,0.7));
-            CellPostion cellPos = editor.getCellPosProperty().getValue();
+            CellPostion cellPos = boardViewModel.getCellPosProperty().getValue();
             gc.fillRect(cellPos.getPosX(), cellPos.getPosY(), 1,1);
         }
 

@@ -4,21 +4,19 @@ import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.utils.CellPostion;
 import org.mohammad.gol.utils.Property;
-import org.mohammad.gol.viewmodel.BoardViewModel;
 
 public class Editor {
-    private Board board;
-    private BoardViewModel boardViewModel;
+
     private Property<CellState> cellStateProperty;
     private Property<CellPostion> cellPosProperty;
-
+    private Property<Board> boardProperty;
 
     private boolean isDrawingEnable = true;
 
-    public Editor(BoardViewModel boardViewModel, CellState cellState) {
-        this.boardViewModel = boardViewModel;
+    public Editor(Board board, CellState cellState) {
         cellStateProperty = new Property<>(cellState);
         cellPosProperty = new Property<>();
+        this.boardProperty = new Property<>(board);
     }
 
     public Property<CellState> getCellStateProperty() {
@@ -30,16 +28,13 @@ public class Editor {
     }
 
 
-    public void setBoard(Board board) {
-        this.board = board;
-    }
 
 
     public void onAppStateChanged(ApplicationState state){
         switch (state){
             case EDITING -> {
                 isDrawingEnable = true;
-                this.boardViewModel.getBoardProperty().setValue(this.board);
+                this.boardProperty.setValue(this.boardProperty.getValue());
             }
             case SIMULATING -> {
                 isDrawingEnable = false;
@@ -61,13 +56,14 @@ public class Editor {
     public void handleBoardPressed(CellPostion cellPos){
         this.getCellPosProperty().setValue(cellPos);
         if(isDrawingEnable){
-            this.board.setState(cellPos.getPosX(),cellPos.getPosY(), this.getCellStateProperty().getValue());
-//            this.boardViewModel.getBoardProperty().setValue(this.board);
+            Board board = boardProperty.getValue();
+            board.setState(cellPos.getPosX(),cellPos.getPosY(), this.getCellStateProperty().getValue());
+            this.boardProperty.setValue(board);
         }
     }
 
 
-    public Board getBoard() {
-        return this.board;
+    public Property<Board> getBoardProperty() {
+        return this.boardProperty;
     }
 }
