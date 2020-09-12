@@ -3,9 +3,8 @@ package org.mohammad.gol.view;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import org.mohammad.gol.logic.DrawModeEvent;
+import org.mohammad.gol.logic.editor.DrawModeEvent;
 import org.mohammad.gol.model.CellState;
-import org.mohammad.gol.logic.Editor;
 import org.mohammad.gol.utils.event.EventBus;
 
 public class MainView extends BorderPane {

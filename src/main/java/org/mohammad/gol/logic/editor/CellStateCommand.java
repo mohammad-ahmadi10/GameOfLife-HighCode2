@@ -1,12 +1,11 @@
-package org.mohammad.gol.logic;
+package org.mohammad.gol.logic.editor;
 
-import org.mohammad.gol.command.EditorCommand;
 import org.mohammad.gol.state.EditorState;
 import org.mohammad.gol.model.CellState;
 
 public class CellStateCommand implements EditorCommand {
 
-    private CellState newCellState;
+    private final CellState newCellState;
 
     public CellStateCommand(CellState newCellState) {
         this.newCellState = newCellState;

@@ -1,12 +1,12 @@
-package org.mohammad.gol.logic;
+package org.mohammad.gol.logic.editor;
 
-import org.mohammad.gol.command.EditorCommand;
+import org.mohammad.gol.logic.ApplicationState;
 import org.mohammad.gol.state.EditorState;
 import org.mohammad.gol.utils.CellPostion;
 
 public class Editor {
 
-    private EditorState editorState;
+    private final EditorState editorState;
 
     private boolean isDrawingEnable = true;
 
@@ -17,12 +17,8 @@ public class Editor {
 
     public void onAppStateChanged(ApplicationState state){
         switch (state){
-            case EDITING -> {
-                isDrawingEnable = true;
-            }
-            case SIMULATING -> {
-                isDrawingEnable = false;
-            }
+            case EDITING -> isDrawingEnable = true;
+            case SIMULATING -> isDrawingEnable = false;
         }
     }
 
@@ -41,9 +37,8 @@ public class Editor {
     }
 
     public void setCursorPos(CellPostion cursorPos){
-        EditorCommand command = state ->{
-          state.getCellPosProperty().setValue(cursorPos);
-        };
+        EditorCommand command = state ->
+                state.getCellPosProperty().setValue(cursorPos);
         command.execute(editorState);
     }
 

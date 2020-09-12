@@ -1,4 +1,4 @@
-package org.mohammad.gol.logic;
+package org.mohammad.gol.logic.editor;
 
 import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.utils.event.Event;

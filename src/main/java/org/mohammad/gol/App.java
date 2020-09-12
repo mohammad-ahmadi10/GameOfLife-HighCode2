@@ -4,10 +4,15 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.mohammad.gol.logic.*;
+import org.mohammad.gol.logic.editor.CursorEvent;
+import org.mohammad.gol.logic.editor.DrawModeEvent;
+import org.mohammad.gol.logic.editor.Editor;
+import org.mohammad.gol.logic.simulator.SimulationEvent;
+import org.mohammad.gol.logic.simulator.Simulator;
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.BoundedBoard;
-import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.state.EditorState;
+import org.mohammad.gol.state.SimulatorState;
 import org.mohammad.gol.utils.event.EventBus;
 import org.mohammad.gol.view.*;
 import org.mohammad.gol.viewmodel.*;
@@ -27,10 +32,11 @@ public class App extends Application {
 
         InfoBarViewModel infoBarViewModel = new InfoBarViewModel();
 
-        Simulator simulator = new Simulator(appStateManager);
+        SimulatorState simulatorState = new SimulatorState(initBoard);
+        Simulator simulator = new Simulator(appStateManager, simulatorState);
         eventBus.addListener(SimulationEvent.class, simulator::handleType);
 
-        simulator.getCurBoard().listenTo(simulationBoard ->
+        simulatorState.getCurBoard().listenTo(simulationBoard ->
                 boardViewModel.getBoardProperty().setValue(simulationBoard)
         );
 
@@ -41,7 +47,7 @@ public class App extends Application {
                 boardViewModel.getCellPosProperty().setValue(cellPos));
 
         editorState.getBoardProperty().listenTo(editorBoard ->{
-            simulator.getInitBoard().setValue(editorBoard);
+            simulatorState.getCurBoard().setValue(editorBoard);
             boardViewModel.getBoardProperty().setValue(editorBoard);
         });
 

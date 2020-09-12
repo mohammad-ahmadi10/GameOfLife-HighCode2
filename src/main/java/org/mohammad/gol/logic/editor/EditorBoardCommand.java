@@ -1,6 +1,5 @@
-package org.mohammad.gol.logic;
+package org.mohammad.gol.logic.editor;
 
-import org.mohammad.gol.command.EditorCommand;
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.state.EditorState;

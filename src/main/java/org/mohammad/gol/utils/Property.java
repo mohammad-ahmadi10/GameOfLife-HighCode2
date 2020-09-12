@@ -1,25 +1,23 @@
 package org.mohammad.gol.utils;
 
-import org.mohammad.gol.logic.Listener;
-
 import java.util.LinkedList;
 import java.util.List;
 
 public class Property<T> {
     private T value;
-    private List<Listener<T>> listenerList;
+    private List<propertyListener<T>> propertyListenerList;
 
     public Property(T value) {
         this.value = value;
-        listenerList = new LinkedList<>();
+        propertyListenerList = new LinkedList<>();
     }
 
     public Property(){
         this(null);
     }
 
-    public void listenTo(Listener<T> listener){
-        listenerList.add(listener);
+    public void listenTo(propertyListener<T> propertyListener){
+        propertyListenerList.add(propertyListener);
     }
 
     public void setValue(T value){
@@ -33,7 +31,7 @@ public class Property<T> {
 
 
     private void notifyAllListener(T value) {
-        listenerList.forEach(listener -> listener.handle(value));
+        propertyListenerList.forEach(propertyListener -> propertyListener.handle(value));
     }
 
     public T getValue() {
