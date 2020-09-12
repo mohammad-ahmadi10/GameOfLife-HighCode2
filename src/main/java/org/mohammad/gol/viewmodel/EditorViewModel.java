@@ -54,14 +54,7 @@ public class EditorViewModel {
     }
 
 
-
-
-
-
-
-
-
-
-
-
+    public Board getBoard() {
+        return this.board;
+    }
 }
