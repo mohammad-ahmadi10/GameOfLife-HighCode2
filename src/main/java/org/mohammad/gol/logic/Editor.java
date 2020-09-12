@@ -1,40 +1,24 @@
 package org.mohammad.gol.logic;
 
-import org.mohammad.gol.model.Board;
-import org.mohammad.gol.model.CellState;
+import org.mohammad.gol.command.EditorCommand;
+import org.mohammad.gol.state.EditorState;
 import org.mohammad.gol.utils.CellPostion;
-import org.mohammad.gol.utils.Property;
 
 public class Editor {
 
-    private Property<CellState> cellStateProperty;
-    private Property<CellPostion> cellPosProperty;
-    private Property<Board> boardProperty;
+    private EditorState editorState;
 
     private boolean isDrawingEnable = true;
 
-    public Editor(Board board, CellState cellState) {
-        cellStateProperty = new Property<>(cellState);
-        cellPosProperty = new Property<>();
-        this.boardProperty = new Property<>(board);
+    public Editor(EditorState editorState) {
+        this.editorState = editorState;
     }
-
-    public Property<CellState> getCellStateProperty() {
-        return cellStateProperty;
-    }
-
-    public Property<CellPostion> getCellPosProperty() {
-        return cellPosProperty;
-    }
-
-
 
 
     public void onAppStateChanged(ApplicationState state){
         switch (state){
             case EDITING -> {
                 isDrawingEnable = true;
-                this.boardProperty.setValue(this.boardProperty.getValue());
             }
             case SIMULATING -> {
                 isDrawingEnable = false;
@@ -45,25 +29,33 @@ public class Editor {
     public void handle(CursorEvent event){
         switch (event.getType()){
             case PRESSED -> handleBoardPressed(event.getCellPostion());
-            case CUROR_MOVED -> this.getCellPosProperty().setValue(event.getCellPostion());
+            case CUROR_MOVED -> setCursorPos(event.getCellPostion());
+
         }
     }
 
+
     public void handle(DrawModeEvent event){
-        this.getCellStateProperty().setValue(event.getCellState());
+        CellStateCommand command = new CellStateCommand(event.getCellState());
+        command.execute(editorState);
+    }
+
+    public void setCursorPos(CellPostion cursorPos){
+        EditorCommand command = state ->{
+          state.getCellPosProperty().setValue(cursorPos);
+        };
+        command.execute(editorState);
     }
 
     public void handleBoardPressed(CellPostion cellPos){
-        this.getCellPosProperty().setValue(cellPos);
+        setCursorPos(cellPos);
+
         if(isDrawingEnable){
-            Board board = boardProperty.getValue();
-            board.setState(cellPos.getPosX(),cellPos.getPosY(), this.getCellStateProperty().getValue());
-            this.boardProperty.setValue(board);
+            EditorBoardCommand command = new EditorBoardCommand(cellPos, editorState.getCellStateProperty().getValue());
+            command.execute(editorState);
         }
     }
 
 
-    public Property<Board> getBoardProperty() {
-        return this.boardProperty;
-    }
+
 }
