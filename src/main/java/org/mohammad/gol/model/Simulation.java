@@ -1,4 +1,4 @@
-package org.mohammad.gol;
+package org.mohammad.gol.model;
 
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.CellState;
