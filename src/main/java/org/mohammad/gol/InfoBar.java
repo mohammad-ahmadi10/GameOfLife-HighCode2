@@ -21,6 +21,9 @@ public class InfoBar extends HBox {
         spacer.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
+        setDrawModeFormat();
+        setCursorFormat();
+
         this.getChildren().addAll(drawModeLbl,spacer,  cursorLbl);
     }
 
@@ -35,7 +38,17 @@ public class InfoBar extends HBox {
         this.drawModeLbl.setText(String.format("DrawMode: %s" , drawModeStr));
     }
 
-    public void setCursorFormat(int x, int y){
+    private void setDrawModeFormat(){
+        setDrawModeFormat(CellState.ALIVE);
+    }
+
+
+    public void setCursorFormat(int x, int y)
+    {
         this.cursorLbl.setText(String.format("Cursor: (%d , %d)" , x ,y));
     }
+    private void setCursorFormat(){
+        this.cursorLbl.setText(String.format("Cursor: (%d , %d)" , 0 ,0));
+    }
+
 }

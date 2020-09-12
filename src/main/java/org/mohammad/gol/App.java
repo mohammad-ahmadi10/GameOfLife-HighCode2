@@ -36,22 +36,20 @@ public class App extends Application {
         /// ####### View Component #########
         InfoBar infoBar = new InfoBar();
         Toolbar toolbar = new Toolbar(simulationViewModel, editorViewModel,appViewModel);
-        SimulationCanvas canvas = new SimulationCanvas(editorViewModel, infoBar);
-        editorViewModel.getCellStateProperty().listenTo(infoBar::setDrawModeFormat);
-        infoBar.setCursorFormat(0,0);
-        infoBar.setDrawModeFormat(CellState.ALIVE);
-
-
-        boardViewModel.getBoardProperty().listenTo(canvas::draw);
-
-
+        SimulationCanvas canvas = new SimulationCanvas(editorViewModel, infoBar, boardViewModel);
         mainView.setTop(toolbar);
         mainView.setCenter(canvas);
         mainView.setBottom(infoBar);
 
 
+        editorViewModel.getCellStateProperty().listenTo(infoBar::setDrawModeFormat);
+        boardViewModel.getBoardProperty().listenTo(canvas::draw);
 
-        Scene scene = new Scene(mainView, 1000, 700);
+
+
+
+
+        Scene scene = new Scene(mainView, 1200, 800);
         stage.setScene(scene);
         stage.show();
 

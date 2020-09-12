@@ -36,7 +36,11 @@ public class SimulationViewModel {
 
     public void start(){ this.timeline.play(); }
 
-    public void stop(){this.timeline.stop(); }
+    public void stop(){
+
+        this.timeline.stop();
+
+    }
 
 
 
