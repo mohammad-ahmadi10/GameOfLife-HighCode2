@@ -2,9 +2,8 @@ package org.mohammad.gol;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
 import javafx.util.Duration;
-import org.mohammad.gol.viewmodel.AppViewModel;
+import org.mohammad.gol.model.StandardRule;
 import org.mohammad.gol.viewmodel.ApplicationState;
 import org.mohammad.gol.viewmodel.BoardViewModel;
 

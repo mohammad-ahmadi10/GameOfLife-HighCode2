@@ -1,8 +1,4 @@
-package org.mohammad.gol;
-
-import org.mohammad.gol.model.Board;
-import org.mohammad.gol.model.CellState;
-import org.mohammad.gol.model.GameRules;
+package org.mohammad.gol.model;
 
 public class StandardRule implements GameRules {
 

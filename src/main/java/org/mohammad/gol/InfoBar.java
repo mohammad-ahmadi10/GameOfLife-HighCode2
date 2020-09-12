@@ -5,6 +5,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import org.mohammad.gol.model.CellState;
+import org.mohammad.gol.utils.CellPostion;
 import org.mohammad.gol.viewmodel.EditorViewModel;
 
 public class InfoBar extends HBox {
@@ -43,12 +44,12 @@ public class InfoBar extends HBox {
     }
 
 
-    public void setCursorFormat(int x, int y)
+    public void setCursorFormat(CellPostion cellPos)
     {
-        this.cursorLbl.setText(String.format("Cursor: (%d , %d)" , x ,y));
+        this.cursorLbl.setText(String.format("Cursor: (%d , %d)" , cellPos.getPosX()+1, cellPos.getPosY()+1));
     }
     private void setCursorFormat(){
-        this.cursorLbl.setText(String.format("Cursor: (%d , %d)" , 0 ,0));
+        this.cursorLbl.setText(String.format("Cursor: (%d , %d)" , 1 ,1));
     }
 
 }

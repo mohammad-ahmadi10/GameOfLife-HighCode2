@@ -12,6 +12,7 @@ import javafx.scene.transform.Scale;
 import org.mohammad.gol.InfoBar;
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.CellState;
+import org.mohammad.gol.utils.CellPostion;
 import org.mohammad.gol.viewmodel.BoardViewModel;
 import org.mohammad.gol.viewmodel.EditorViewModel;
 
@@ -20,13 +21,12 @@ public class SimulationCanvas extends Pane {
     private Canvas canvas;
     private Affine affine;
     private EditorViewModel editorViewModel;
-    private InfoBar infoBar;
     private BoardViewModel boardViewModel;
 
 
-    public SimulationCanvas(EditorViewModel editorViewModel, InfoBar infoBar, BoardViewModel boardViewModel) {
+    public SimulationCanvas(EditorViewModel editorViewModel, BoardViewModel boardViewModel) {
         this.editorViewModel = editorViewModel;
-        this.infoBar = infoBar;
+
         this.boardViewModel = boardViewModel;
 
         this.canvas = new Canvas(400,400);
@@ -45,6 +45,7 @@ public class SimulationCanvas extends Pane {
         this.getChildren().add(this.canvas);
     }
 
+
     @Override
     public void resize(double v, double v1) {
         super.resize(v, v1);
@@ -53,36 +54,33 @@ public class SimulationCanvas extends Pane {
 
 
     private void handleMoved(MouseEvent event) {
-        Point2D simCord = simCoordinate(event);
-        int simX = (int) simCord.getX();
-        int simY = (int) simCord.getY();
+        CellPostion cellPos = simCoordinate(event);
 
-        getCurPos(simX, simY);
+        int width = boardViewModel.getBoard().getWidth();
+        int height = boardViewModel.getBoard().getHeight();
+
+        if( (cellPos.getPosX() < 0 || cellPos.getPosX() >= width )||
+            (cellPos.getPosY() < 0 || cellPos.getPosY() >= height))
+            return;
+
+            editorViewModel.getCellPosProperty().setValue(cellPos);
+
     }
-
-    private void getCurPos(int simX, int simY) {
-        this.infoBar.setCursorFormat(simX, simY);
-    }
-
 
     private void handleDraw(MouseEvent event) {
-
-        Point2D simCord = simCoordinate(event);
-        int simX = (int) simCord.getX();
-        int simY = (int) simCord.getY();
-
-        this.editorViewModel.handleBoardPressed(simX, simY);
+        CellPostion cellPos = simCoordinate(event);
+        this.editorViewModel.handleBoardPressed(cellPos);
     }
 
 
-    private Point2D simCoordinate(MouseEvent event){
+    private CellPostion simCoordinate(MouseEvent event){
         double  mouseX = event.getX();
         double  mouseY =  event.getY();
 
         try {
             Point2D simCord = this.affine.inverseTransform(mouseX, mouseY);
 
-            return simCord;
+            return new CellPostion((int) simCord.getX(), (int) simCord.getY());
 
         } catch (NonInvertibleTransformException e) {
             throw new RuntimeException("Non invertable transform");
@@ -101,22 +99,33 @@ public class SimulationCanvas extends Pane {
         this.drawSimulation(board);
 
 
+        if(editorViewModel.getCellPosProperty().isPresent()){
+            gc.setFill(new Color(0.3,0.3,0.3,0.7));
+            CellPostion cellPos = editorViewModel.getCellPosProperty().getValue();
+            gc.fillRect(cellPos.getPosX(), cellPos.getPosY(), 1,1);
+        }
+
+
+
         gc.setStroke(Color.GRAY);
         gc.setLineWidth(0.05);
         for (int x = 0; x <= board.getWidth(); x++) {
             gc.strokeLine(x,0, x, board.getHeight());
         }
+
         for (int y = 0; y <= board.getHeight(); y++){
             gc.strokeLine(0,y,board.getWidth(), y);
         }
+
     }
+
 
 
     private void drawSimulation(Board board){
         GraphicsContext gc = this.canvas.getGraphicsContext2D();
         gc.setFill(Color.BLACK);
-        for (int x = 0; x < board.getWidth(); x++) {
-            for (int y = 0; y < board.getHeight(); y++) {
+        for (int x = 0; x <= board.getWidth(); x++) {
+            for (int y = 0; y <= board.getHeight(); y++) {
                 if(board.getState(x,y) == CellState.ALIVE){
                     gc.fillRect(x,y, 1,1);
                 }
