@@ -40,9 +40,11 @@ public class Toolbar extends ToolBar {
     }
 
     private void handleStop(ActionEvent event) {
-            System.out.println("stop pressed");
-            isPlaying = false;
-            this.simulationViewModel.stop();
+        if(this.simulationViewModel == null)
+            return;
+        System.out.println("stop pressed");
+        isPlaying = false;
+        this.simulationViewModel.stop();
     }
 
 
@@ -50,11 +52,20 @@ public class Toolbar extends ToolBar {
         if(isPlaying == true)
             return;
         isPlaying = true;
-        this.appViewModel.getAppStateProperty().setValue(ApplicationState.SIMULATING);
+        changeToSimu();
         this.simulationViewModel.start();
     }
+
+
+    private void changeToSimu() {
+        if (this.appViewModel.getAppStateProperty().getValue() != ApplicationState.SIMULATING) {
+            this.appViewModel.getAppStateProperty().setValue(ApplicationState.SIMULATING);
+        }
+    }
+
+
     private void handleStep(ActionEvent event) {
-        this.appViewModel.getAppStateProperty().setValue(ApplicationState.SIMULATING);
+        changeToSimu();
         this.simulationViewModel.handleStep();
     }
 
@@ -64,9 +75,11 @@ public class Toolbar extends ToolBar {
             isPlaying = false;
     }
 
+
     private void handleDraw(ActionEvent event) {
             this.editorViewModel.getCellStateProperty().setValue(CellState.ALIVE);
     }
+
 
     private void handleErese(ActionEvent event) {
         this.editorViewModel.getCellStateProperty().setValue(CellState.DEAD);

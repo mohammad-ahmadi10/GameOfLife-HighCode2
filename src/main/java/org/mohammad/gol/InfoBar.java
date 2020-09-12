@@ -11,11 +11,8 @@ public class InfoBar extends HBox {
 
     private Label drawModeLbl;
     private Label cursorLbl;
-    private EditorViewModel editorViewModel;
 
-    public InfoBar(EditorViewModel editorViewModel){
-        this.editorViewModel = editorViewModel;
-        this.editorViewModel.getCellStateProperty().listenTo(this::setDrawModeFormat);
+    public InfoBar(){
         drawModeLbl = new Label();
         cursorLbl = new Label();
 
@@ -23,6 +20,9 @@ public class InfoBar extends HBox {
         Pane spacer = new Pane();
         spacer.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        setDrawModeFormat();
+        setCursorFormat();
 
         this.getChildren().addAll(drawModeLbl,spacer,  cursorLbl);
     }
@@ -38,7 +38,17 @@ public class InfoBar extends HBox {
         this.drawModeLbl.setText(String.format("DrawMode: %s" , drawModeStr));
     }
 
-    public void setCursorFormat(int x, int y){
+    private void setDrawModeFormat(){
+        setDrawModeFormat(CellState.ALIVE);
+    }
+
+
+    public void setCursorFormat(int x, int y)
+    {
         this.cursorLbl.setText(String.format("Cursor: (%d , %d)" , x ,y));
     }
+    private void setCursorFormat(){
+        this.cursorLbl.setText(String.format("Cursor: (%d , %d)" , 0 ,0));
+    }
+
 }
