@@ -17,10 +17,6 @@ public class BoardViewModel {
         CellPosProperty = new Property<>();
     }
 
-    public Board getBoard() {
-        return board;
-    }
-
     public Property<Board> getBoardProperty() {
         return boardProperty;
     }

@@ -59,8 +59,8 @@ public class SimulationCanvas extends Pane {
 
             CellPostion cellPos = simCoordinate(event);
 
-            int width = boardViewModel.getBoard().getWidth();
-            int height = boardViewModel.getBoard().getHeight();
+            int width = boardViewModel.getBoardProperty().getValue().getWidth();
+            int height = boardViewModel.getBoardProperty().getValue().getHeight();
 
             if( (cellPos.getPosX() < 0 || cellPos.getPosX() >= width )||
                 (cellPos.getPosY() < 0 || cellPos.getPosY() >= height))

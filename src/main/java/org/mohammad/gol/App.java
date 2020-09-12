@@ -74,7 +74,7 @@ public class App extends Application {
 
 
         boardViewModel.getBoardProperty().listenTo(canvas::draw);
-        editor.getCellPosProperty().listenTo(e -> canvas.draw(boardViewModel.getBoard()));
+        editor.getCellPosProperty().listenTo(e -> canvas.draw(boardViewModel.getBoardProperty().getValue()));
         editor.getCellPosProperty().listenTo(infoBar::setCursorFormat);
 
 

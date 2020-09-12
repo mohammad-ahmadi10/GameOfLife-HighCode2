@@ -10,13 +10,13 @@ import org.mohammad.gol.utils.Property;
 
 public class Simulator {
 
-    private Timeline timeline;
-    private AppStateManager appStateManager;
+    private final Timeline timeline;
+    private final AppStateManager appStateManager;
     private Simulation simulation;
     private boolean isPlaying = false;
 
-    private Property<Board> initBoard = new Property<>();
-    private Property<Board> curBoard = new Property<>();
+    private final Property<Board> initBoard = new Property<>();
+    private final Property<Board> curBoard = new Property<>();
 
     public Simulator( AppStateManager appStateManager){
         this.appStateManager = appStateManager;
@@ -50,16 +50,13 @@ public class Simulator {
 
 
     public void start() {
-        if (isPlaying == true)
+        if (isPlaying)
             return;
         this.timeline.play();
         isPlaying = true;
     }
 
     public void stop(){
-        if(appStateManager.getAppStateProperty().getValue() != ApplicationState.SIMULATING)
-            appStateManager.getAppStateProperty().setValue(ApplicationState.SIMULATING);
-
         this.timeline.stop();
         isPlaying = false;
     }
