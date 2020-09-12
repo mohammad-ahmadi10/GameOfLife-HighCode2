@@ -6,10 +6,12 @@ import javafx.stage.Stage;
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.BoundedBoard;
 import org.mohammad.gol.model.CellState;
+import org.mohammad.gol.utils.event.EventBus;
 import org.mohammad.gol.view.SimulationCanvas;
 import org.mohammad.gol.viewmodel.AppViewModel;
 import org.mohammad.gol.viewmodel.BoardViewModel;
 import org.mohammad.gol.viewmodel.EditorViewModel;
+import org.mohammad.gol.viewmodel.SimulationEvent;
 
 /**
  * JavaFX App
@@ -18,6 +20,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
+        EventBus eventBus = new EventBus();
 
         Board initBoard = new BoundedBoard(20,15);
         AppViewModel appViewModel = new AppViewModel();
@@ -25,9 +28,10 @@ public class App extends Application {
         EditorViewModel editorViewModel = new EditorViewModel(boardViewModel, CellState.ALIVE);
         editorViewModel.setBoard(initBoard);
 
-        SimulationViewModel simulationViewModel = new SimulationViewModel(boardViewModel);
+        SimulationViewModel simulationViewModel = new SimulationViewModel(boardViewModel,appViewModel, editorViewModel);
         appViewModel.getAppStateProperty().listenTo(editorViewModel::onAppStateChanged);
-        appViewModel.getAppStateProperty().listenTo(simulationViewModel::onChangedAppState);
+
+        eventBus.addListener(SimulationEvent.class, simulationViewModel::handleType);
 
 
         MainView mainView = new MainView(editorViewModel);
@@ -35,8 +39,8 @@ public class App extends Application {
 
         /// ####### View Component #########
         InfoBar infoBar = new InfoBar();
-        Toolbar toolbar = new Toolbar(simulationViewModel, editorViewModel,appViewModel);
-        SimulationCanvas canvas = new SimulationCanvas(editorViewModel, infoBar, boardViewModel);
+        Toolbar toolbar = new Toolbar(editorViewModel,eventBus);
+        SimulationCanvas canvas = new SimulationCanvas(editorViewModel, boardViewModel);
         mainView.setTop(toolbar);
         mainView.setCenter(canvas);
         mainView.setBottom(infoBar);
@@ -44,7 +48,8 @@ public class App extends Application {
 
         editorViewModel.getCellStateProperty().listenTo(infoBar::setDrawModeFormat);
         boardViewModel.getBoardProperty().listenTo(canvas::draw);
-
+        editorViewModel.getCellPosProperty().listenTo(e -> canvas.draw(boardViewModel.getBoard()));
+        editorViewModel.getCellPosProperty().listenTo(infoBar::setCursorFormat);
 
 
 

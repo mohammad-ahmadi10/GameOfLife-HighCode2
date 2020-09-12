@@ -23,16 +23,14 @@ public class Property<T> {
     }
 
     public void setValue(T value){
-//
-//        if(value == this.value){
-//            return;
-//        }
-
             this.value = value;
             notifyAllListener(this.value);
-
-
     }
+
+    public Boolean isPresent(){
+        return value != null;
+    }
+
 
     private void notifyAllListener(T value) {
         listenerList.forEach(listener -> listener.handle(value));
