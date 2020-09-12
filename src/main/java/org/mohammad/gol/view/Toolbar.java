@@ -1,23 +1,19 @@
-package org.mohammad.gol;
+package org.mohammad.gol.view;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
+import org.mohammad.gol.logic.DrawModeEvent;
+import org.mohammad.gol.logic.SimulationEvent;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.utils.event.EventBus;
-import org.mohammad.gol.viewmodel.AppViewModel;
-import org.mohammad.gol.viewmodel.ApplicationState;
-import org.mohammad.gol.viewmodel.EditorViewModel;
-import org.mohammad.gol.viewmodel.SimulationEvent;
 
 public class Toolbar extends ToolBar {
 
 
-    private EditorViewModel editorViewModel;
     private EventBus eventBus;
 
-    public Toolbar(EditorViewModel editorViewModel, EventBus eventBus){
-        this.editorViewModel = editorViewModel;
+    public Toolbar(EventBus eventBus){
         this.eventBus = eventBus;
 
         Button drawBtn = new Button("Draw");
@@ -58,13 +54,11 @@ public class Toolbar extends ToolBar {
 
 
     private void handleDraw(ActionEvent event) {
-            this.editorViewModel.getCellStateProperty().setValue(CellState.ALIVE);
+            eventBus.emit(new DrawModeEvent(CellState.ALIVE));
     }
 
     private void handleErese(ActionEvent event) {
-        this.editorViewModel.getCellStateProperty().setValue(CellState.DEAD);
+        eventBus.emit(new DrawModeEvent(CellState.DEAD));
     }
-
-
 
 }

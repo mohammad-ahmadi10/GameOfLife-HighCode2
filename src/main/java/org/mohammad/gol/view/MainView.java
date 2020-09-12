@@ -1,17 +1,17 @@
-package org.mohammad.gol;
+package org.mohammad.gol.view;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import org.mohammad.gol.model.CellState;
-import org.mohammad.gol.viewmodel.EditorViewModel;
+import org.mohammad.gol.logic.Editor;
 
 public class MainView extends BorderPane {
 
-    private EditorViewModel editorViewModel;
+    private Editor editor;
 
-    public MainView(EditorViewModel editorViewModel){
-        this.editorViewModel = editorViewModel;
+    public MainView(Editor editor){
+        this.editor = editor;
         this.setOnKeyPressed(this::keyPressedHandle);
 
     }
@@ -19,9 +19,9 @@ public class MainView extends BorderPane {
 
     private void keyPressedHandle(KeyEvent event) {
         if(event.getCode() == KeyCode.D){
-            this.editorViewModel.getCellStateProperty().setValue(CellState.ALIVE);
+            this.editor.getCellStateProperty().setValue(CellState.ALIVE);
         }else if(event.getCode() == KeyCode.E){
-            this.editorViewModel.getCellStateProperty().setValue(CellState.DEAD);
+            this.editor.getCellStateProperty().setValue(CellState.DEAD);
         }
     }
 

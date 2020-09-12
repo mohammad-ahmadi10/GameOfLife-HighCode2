@@ -1,6 +1,6 @@
 package org.mohammad.gol.utils;
 
-import org.mohammad.gol.viewmodel.Listener;
+import org.mohammad.gol.logic.Listener;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,12 +1,12 @@
-package org.mohammad.gol.viewmodel;
+package org.mohammad.gol.logic;
 
 import org.mohammad.gol.utils.Property;
 
-public class AppViewModel {
+public class AppStateManager {
 
     private Property<ApplicationState> appStateProperty;
 
-    public AppViewModel() {
+    public AppStateManager() {
         appStateProperty = new Property<>();
     }
 

@@ -1,11 +1,12 @@
-package org.mohammad.gol.viewmodel;
+package org.mohammad.gol.logic;
 
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.utils.CellPostion;
 import org.mohammad.gol.utils.Property;
+import org.mohammad.gol.viewmodel.BoardViewModel;
 
-public class EditorViewModel {
+public class Editor {
     private Board board;
     private BoardViewModel boardViewModel;
     private Property<CellState> cellStateProperty;
@@ -14,7 +15,7 @@ public class EditorViewModel {
 
     private boolean isDrawingEnable = true;
 
-    public EditorViewModel(BoardViewModel boardViewModel,CellState cellState) {
+    public Editor(BoardViewModel boardViewModel, CellState cellState) {
         this.boardViewModel = boardViewModel;
         cellStateProperty = new Property<>(cellState);
         cellPosProperty = new Property<>();
@@ -46,10 +47,22 @@ public class EditorViewModel {
         }
     }
 
+    public void handle(CursorEvent event){
+        switch (event.getType()){
+            case PRESSED -> handleBoardPressed(event.getCellPostion());
+            case CUROR_MOVED -> this.getCellPosProperty().setValue(event.getCellPostion());
+        }
+    }
+
+    public void handle(DrawModeEvent event){
+        this.getCellStateProperty().setValue(event.getCellState());
+    }
+
     public void handleBoardPressed(CellPostion cellPos){
+        this.getCellPosProperty().setValue(cellPos);
         if(isDrawingEnable){
             this.board.setState(cellPos.getPosX(),cellPos.getPosY(), this.getCellStateProperty().getValue());
-            this.boardViewModel.getBoardProperty().setValue(this.board);
+//            this.boardViewModel.getBoardProperty().setValue(this.board);
         }
     }
 

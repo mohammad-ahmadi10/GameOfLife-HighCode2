@@ -3,15 +3,13 @@ package org.mohammad.gol;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.mohammad.gol.logic.*;
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.BoundedBoard;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.gol.utils.event.EventBus;
-import org.mohammad.gol.view.SimulationCanvas;
-import org.mohammad.gol.viewmodel.AppViewModel;
-import org.mohammad.gol.viewmodel.BoardViewModel;
-import org.mohammad.gol.viewmodel.EditorViewModel;
-import org.mohammad.gol.viewmodel.SimulationEvent;
+import org.mohammad.gol.view.*;
+import org.mohammad.gol.viewmodel.*;
 
 /**
  * JavaFX App
@@ -23,43 +21,45 @@ public class App extends Application {
         EventBus eventBus = new EventBus();
 
         Board initBoard = new BoundedBoard(20,15);
-        AppViewModel appViewModel = new AppViewModel();
+        AppStateManager appStateManager = new AppStateManager();
+
         BoardViewModel boardViewModel = new BoardViewModel(initBoard);
-        EditorViewModel editorViewModel = new EditorViewModel(boardViewModel, CellState.ALIVE);
-        editorViewModel.setBoard(initBoard);
-
-        SimulationViewModel simulationViewModel = new SimulationViewModel(boardViewModel,appViewModel, editorViewModel);
-        appViewModel.getAppStateProperty().listenTo(editorViewModel::onAppStateChanged);
-
-        eventBus.addListener(SimulationEvent.class, simulationViewModel::handleType);
+        Editor editor = new Editor(boardViewModel, CellState.ALIVE);
+        editor.setBoard(initBoard);
+        appStateManager.getAppStateProperty().listenTo(editor::onAppStateChanged);
+        eventBus.addListener(CursorEvent.class, editor::handle);
+        eventBus.addListener(DrawModeEvent.class, editor::handle);
 
 
-        MainView mainView = new MainView(editorViewModel);
+        Simulator simulator = new Simulator(boardViewModel, appStateManager, editor);
+        eventBus.addListener(SimulationEvent.class, simulator::handleType);
+
+
+
+        MainView mainView = new MainView(editor);
 
 
         /// ####### View Component #########
         InfoBar infoBar = new InfoBar();
-        Toolbar toolbar = new Toolbar(editorViewModel,eventBus);
-        SimulationCanvas canvas = new SimulationCanvas(editorViewModel, boardViewModel);
+        Toolbar toolbar = new Toolbar(eventBus);
+        SimulationCanvas canvas = new SimulationCanvas(editor, boardViewModel, eventBus);
         mainView.setTop(toolbar);
         mainView.setCenter(canvas);
         mainView.setBottom(infoBar);
 
 
-        editorViewModel.getCellStateProperty().listenTo(infoBar::setDrawModeFormat);
+
+        editor.getCellStateProperty().listenTo(infoBar::setDrawModeFormat);
         boardViewModel.getBoardProperty().listenTo(canvas::draw);
-        editorViewModel.getCellPosProperty().listenTo(e -> canvas.draw(boardViewModel.getBoard()));
-        editorViewModel.getCellPosProperty().listenTo(infoBar::setCursorFormat);
-
-
+        editor.getCellPosProperty().listenTo(e -> canvas.draw(boardViewModel.getBoard()));
+        editor.getCellPosProperty().listenTo(infoBar::setCursorFormat);
 
 
         Scene scene = new Scene(mainView, 1200, 800);
         stage.setScene(scene);
         stage.show();
 
-
-        boardViewModel.getBoardProperty().setValue(initBoard);
+//        boardViewModel.getBoardProperty().setValue(initBoard);
     }
 
     public static void main(String[] args) {

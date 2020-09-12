@@ -1,4 +1,4 @@
-package org.mohammad.gol.viewmodel;
+package org.mohammad.gol.logic;
 
 public enum ApplicationState {
     SIMULATING,
