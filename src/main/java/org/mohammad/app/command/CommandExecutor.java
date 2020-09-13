@@ -1,6 +1,6 @@
-package org.mohammad.gol.command;
+package org.mohammad.app.command;
 
-import org.mohammad.gol.state.StateRegistry;
+import org.mohammad.app.state.StateRegistry;
 
 public class CommandExecutor {
 

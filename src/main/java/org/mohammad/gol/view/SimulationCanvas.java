@@ -11,8 +11,8 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Scale;
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.CellState;
-import org.mohammad.gol.utils.CellPostion;
-import org.mohammad.gol.utils.event.EventBus;
+import org.mohammad.app.observable.CellPostion;
+import org.mohammad.app.observable.event.EventBus;
 import org.mohammad.gol.viewmodel.BoardViewModel;
 import org.mohammad.gol.logic.editor.CursorEvent;
 

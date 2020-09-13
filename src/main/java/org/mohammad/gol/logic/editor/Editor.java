@@ -1,9 +1,9 @@
 package org.mohammad.gol.logic.editor;
 
-import org.mohammad.gol.command.CommandExecutor;
+import org.mohammad.app.command.CommandExecutor;
 import org.mohammad.gol.logic.ApplicationState;
 import org.mohammad.gol.state.EditorState;
-import org.mohammad.gol.utils.CellPostion;
+import org.mohammad.app.observable.CellPostion;
 
 public class Editor {
 

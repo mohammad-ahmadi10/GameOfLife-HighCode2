@@ -1,4 +1,4 @@
-package org.mohammad.gol.state;
+package org.mohammad.app.state;
 
 import java.util.HashMap;
 import java.util.Map;

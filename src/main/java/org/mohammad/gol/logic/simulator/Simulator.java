@@ -3,7 +3,7 @@ package org.mohammad.gol.logic.simulator;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-import org.mohammad.gol.command.CommandExecutor;
+import org.mohammad.app.command.CommandExecutor;
 import org.mohammad.gol.logic.AppStateManager;
 import org.mohammad.gol.logic.ApplicationState;
 import org.mohammad.gol.model.Simulation;

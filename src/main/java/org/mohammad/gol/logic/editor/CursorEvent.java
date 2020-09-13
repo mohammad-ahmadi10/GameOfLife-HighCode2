@@ -1,7 +1,7 @@
 package org.mohammad.gol.logic.editor;
 
-import org.mohammad.gol.utils.CellPostion;
-import org.mohammad.gol.utils.event.Event;
+import org.mohammad.app.observable.CellPostion;
+import org.mohammad.app.observable.event.Event;
 
 public class CursorEvent implements Event {
 

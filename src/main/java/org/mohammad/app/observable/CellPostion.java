@@ -1,4 +1,4 @@
-package org.mohammad.gol.utils;
+package org.mohammad.app.observable;
 
 public class CellPostion {
     private int posX;

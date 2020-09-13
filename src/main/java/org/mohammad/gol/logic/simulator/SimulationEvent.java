@@ -1,6 +1,6 @@
 package org.mohammad.gol.logic.simulator;
 
-import org.mohammad.gol.utils.event.Event;
+import org.mohammad.app.observable.event.Event;
 
 public class SimulationEvent implements Event {
 
