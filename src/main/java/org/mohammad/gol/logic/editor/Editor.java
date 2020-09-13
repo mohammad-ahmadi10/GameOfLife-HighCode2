@@ -1,5 +1,6 @@
 package org.mohammad.gol.logic.editor;
 
+import org.mohammad.gol.command.CommandExecutor;
 import org.mohammad.gol.logic.ApplicationState;
 import org.mohammad.gol.state.EditorState;
 import org.mohammad.gol.utils.CellPostion;
@@ -7,11 +8,14 @@ import org.mohammad.gol.utils.CellPostion;
 public class Editor {
 
     private final EditorState editorState;
+    private CommandExecutor commandExecutor;
 
     private boolean isDrawingEnable = true;
 
-    public Editor(EditorState editorState) {
+    public Editor(EditorState editorState, CommandExecutor commandExecutor) {
+
         this.editorState = editorState;
+        this.commandExecutor = commandExecutor;
     }
 
 
@@ -25,7 +29,7 @@ public class Editor {
     public void handle(CursorEvent event){
         switch (event.getType()){
             case PRESSED -> handleBoardPressed(event.getCellPostion());
-            case CUROR_MOVED -> setCursorPos(event.getCellPostion());
+            case CURSOR_MOVED -> setCursorPos(event.getCellPostion());
 
         }
     }
@@ -33,13 +37,13 @@ public class Editor {
 
     public void handle(DrawModeEvent event){
         CellStateCommand command = new CellStateCommand(event.getCellState());
-        command.execute(editorState);
+        commandExecutor.execute(command);
     }
 
     public void setCursorPos(CellPostion cursorPos){
         EditorCommand command = state ->
                 state.getCellPosProperty().setValue(cursorPos);
-        command.execute(editorState);
+        commandExecutor.execute(command);
     }
 
     public void handleBoardPressed(CellPostion cellPos){
@@ -47,7 +51,7 @@ public class Editor {
 
         if(isDrawingEnable){
             EditorBoardCommand command = new EditorBoardCommand(cellPos, editorState.getCellStateProperty().getValue());
-            command.execute(editorState);
+            commandExecutor.execute(command);
         }
     }
 

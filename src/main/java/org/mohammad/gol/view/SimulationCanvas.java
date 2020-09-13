@@ -65,7 +65,7 @@ public class SimulationCanvas extends Pane {
                 (cellPos.getPosY() < 0 || cellPos.getPosY() >= height))
                 return;
 
-            eventBus.emit(new CursorEvent(CursorEvent.Type.CUROR_MOVED, cellPos));
+            eventBus.emit(new CursorEvent(CursorEvent.Type.CURSOR_MOVED, cellPos));
 
     }
 

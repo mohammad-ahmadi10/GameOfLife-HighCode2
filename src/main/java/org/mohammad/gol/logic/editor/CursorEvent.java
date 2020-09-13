@@ -6,7 +6,7 @@ import org.mohammad.gol.utils.event.Event;
 public class CursorEvent implements Event {
 
     public enum Type{
-        CUROR_MOVED,
+        CURSOR_MOVED,
         PRESSED
     }
 

@@ -3,6 +3,7 @@ package org.mohammad.gol;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.mohammad.gol.command.CommandExecutor;
 import org.mohammad.gol.logic.*;
 import org.mohammad.gol.logic.editor.CursorEvent;
 import org.mohammad.gol.logic.editor.DrawModeEvent;
@@ -13,6 +14,7 @@ import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.BoundedBoard;
 import org.mohammad.gol.state.EditorState;
 import org.mohammad.gol.state.SimulatorState;
+import org.mohammad.gol.state.StateRegistry;
 import org.mohammad.gol.utils.event.EventBus;
 import org.mohammad.gol.view.*;
 import org.mohammad.gol.viewmodel.*;
@@ -25,15 +27,21 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         EventBus eventBus = new EventBus();
-
         Board initBoard = new BoundedBoard(20,15);
-        BoardViewModel boardViewModel = new BoardViewModel(initBoard);
-        AppStateManager appStateManager = new AppStateManager();
 
+
+        StateRegistry stateRegistry = new StateRegistry();
+        CommandExecutor commandExecutor = new CommandExecutor(stateRegistry);
+
+        AppStateManager appStateManager = new AppStateManager();
+        BoardViewModel boardViewModel = new BoardViewModel(initBoard);
         InfoBarViewModel infoBarViewModel = new InfoBarViewModel();
 
+
         SimulatorState simulatorState = new SimulatorState(initBoard);
-        Simulator simulator = new Simulator(appStateManager, simulatorState);
+        stateRegistry.register(SimulatorState.class, simulatorState);
+
+        Simulator simulator = new Simulator(appStateManager, simulatorState ,commandExecutor);
         eventBus.addListener(SimulationEvent.class, simulator::handleType);
 
         simulatorState.getCurBoard().listenTo(simulationBoard ->
@@ -41,8 +49,9 @@ public class App extends Application {
         );
 
         EditorState editorState = new EditorState(initBoard);
+        stateRegistry.register(EditorState.class, editorState);
 
-        Editor editor = new Editor(editorState);
+        Editor editor = new Editor(editorState, commandExecutor);
         editorState.getCellPosProperty().listenTo(cellPos ->
                 boardViewModel.getCellPosProperty().setValue(cellPos));
 
