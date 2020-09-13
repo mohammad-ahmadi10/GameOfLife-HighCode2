@@ -1,7 +1,6 @@
-package org.mohammad.gol.logic.simulator;
+package org.mohammad.gol.component.simulator;
 
 import org.mohammad.app.command.Command;
-import org.mohammad.gol.state.SimulatorState;
 
 public interface SimulatorCommand extends Command<SimulatorState> {
     @Override

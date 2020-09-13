@@ -1,8 +1,7 @@
-package org.mohammad.gol.logic.editor;
+package org.mohammad.gol.component.editor;
 
 import org.mohammad.app.command.CommandExecutor;
-import org.mohammad.gol.logic.ApplicationState;
-import org.mohammad.gol.state.EditorState;
+import org.mohammad.gol.component.simulator.SimulationEvent;
 import org.mohammad.app.observable.CellPostion;
 
 public class Editor {
@@ -19,10 +18,10 @@ public class Editor {
     }
 
 
-    public void onAppStateChanged(ApplicationState state){
-        switch (state){
-            case EDITING -> isDrawingEnable = true;
-            case SIMULATING -> isDrawingEnable = false;
+    public void handleSimulatorEvent(SimulationEvent event){
+        switch (event.getType()){
+            case REST -> isDrawingEnable = true;
+            case STEP,START -> isDrawingEnable = false;
         }
     }
 

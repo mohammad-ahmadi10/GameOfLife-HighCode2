@@ -3,7 +3,7 @@ package org.mohammad.gol.view;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import org.mohammad.gol.logic.editor.DrawModeEvent;
+import org.mohammad.gol.component.editor.DrawModeEvent;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.app.observable.event.EventBus;
 
@@ -11,10 +11,24 @@ public class MainView extends BorderPane {
 
     private EventBus eventBus;
 
+    private SimulationCanvas canvas;
+
     public MainView(EventBus eventBus){
         this.eventBus = eventBus;
+
+        canvas = new SimulationCanvas(eventBus);
+        this.setCenter(canvas);
+
+        Toolbar toolbar = new Toolbar(eventBus);
+        this.setTop(toolbar);
+
+
         this.setOnKeyPressed(this::keyPressedHandle);
 
+    }
+
+    public void addDrawLayer(DrawLayer drawLayer){
+        canvas.addDrawLayers(drawLayer);
     }
 
 

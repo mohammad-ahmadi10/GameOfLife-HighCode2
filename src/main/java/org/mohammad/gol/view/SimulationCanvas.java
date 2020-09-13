@@ -9,25 +9,24 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Scale;
-import org.mohammad.gol.model.Board;
-import org.mohammad.gol.model.CellState;
 import org.mohammad.app.observable.CellPostion;
 import org.mohammad.app.observable.event.EventBus;
-import org.mohammad.gol.viewmodel.BoardViewModel;
-import org.mohammad.gol.logic.editor.CursorEvent;
+import org.mohammad.gol.component.editor.CursorEvent;
+
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SimulationCanvas extends Pane {
 
     private Canvas canvas;
     private Affine affine;
-    private BoardViewModel boardViewModel;
     private EventBus eventBus;
 
+    private List<DrawLayer> drawLayers = new LinkedList<>();
 
-    public SimulationCanvas( BoardViewModel boardViewModel,
-                            EventBus eventBus) {
+    public SimulationCanvas(EventBus eventBus) {
 
-        this.boardViewModel = boardViewModel;
         this.eventBus = eventBus;
 
         this.canvas = new Canvas(400,400);
@@ -46,11 +45,18 @@ public class SimulationCanvas extends Pane {
         this.getChildren().add(this.canvas);
     }
 
+    public void addDrawLayers(DrawLayer drawLayer){
+        drawLayers.add(drawLayer);
+        drawLayers.sort(Comparator.comparingInt(DrawLayer::getLayer));
+        drawLayer.addInvalidationListener(this::draw);
+    }
+
+
 
     @Override
     public void resize(double v, double v1) {
         super.resize(v, v1);
-        draw(this.boardViewModel.getBoardProperty().getValue());
+        draw();
     }
 
 
@@ -58,13 +64,9 @@ public class SimulationCanvas extends Pane {
 
             CellPostion cellPos = simCoordinate(event);
 
-            int width = boardViewModel.getBoardProperty().getValue().getWidth();
-            int height = boardViewModel.getBoardProperty().getValue().getHeight();
-
-            if( (cellPos.getPosX() < 0 || cellPos.getPosX() >= width )||
-                (cellPos.getPosY() < 0 || cellPos.getPosY() >= height))
+            if( (cellPos.getPosX() < 0 || cellPos.getPosX() >= 20 )||
+                (cellPos.getPosY() < 0 || cellPos.getPosY() >= 15))
                 return;
-
             eventBus.emit(new CursorEvent(CursorEvent.Type.CURSOR_MOVED, cellPos));
 
     }
@@ -93,49 +95,16 @@ public class SimulationCanvas extends Pane {
 
 
 
-    public void draw(Board board){
+    public void draw(){
         GraphicsContext gc = this.canvas.getGraphicsContext2D();
         gc.setTransform(affine);
 
         gc.setFill(Color.LIGHTGRAY);
         gc.fillRect(0,0,this.canvas.getWidth(), this.canvas.getHeight());
 
-        this.drawSimulation(board);
-
-
-        if(boardViewModel.getCellPosProperty().isPresent()){
-            gc.setFill(new Color(0.3,0.3,0.3,0.7));
-            CellPostion cellPos = boardViewModel.getCellPosProperty().getValue();
-            gc.fillRect(cellPos.getPosX(), cellPos.getPosY(), 1,1);
-        }
-
-
-
-        gc.setStroke(Color.GRAY);
-        gc.setLineWidth(0.05);
-        for (int x = 0; x <= board.getWidth(); x++) {
-            gc.strokeLine(x,0, x, board.getHeight());
-        }
-
-        for (int y = 0; y <= board.getHeight(); y++){
-            gc.strokeLine(0,y,board.getWidth(), y);
-        }
-
+        drawLayers.forEach(drawLayer -> drawLayer.draw(gc));
     }
 
-
-
-    private void drawSimulation(Board board){
-        GraphicsContext gc = this.canvas.getGraphicsContext2D();
-        gc.setFill(Color.BLACK);
-        for (int x = 0; x <= board.getWidth(); x++) {
-            for (int y = 0; y <= board.getHeight(); y++) {
-                if(board.getState(x,y) == CellState.ALIVE){
-                    gc.fillRect(x,y, 1,1);
-                }
-            }
-        }
-    }
 
 
 

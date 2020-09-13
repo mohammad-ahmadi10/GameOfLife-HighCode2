@@ -1,4 +1,4 @@
-package org.mohammad.gol.view;
+package org.mohammad.gol.component.infobar;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.app.observable.CellPostion;
-import org.mohammad.gol.viewmodel.InfoBarViewModel;
+import org.mohammad.gol.component.infobar.InfoBarViewModel;
 
 public class InfoBar extends HBox {
 

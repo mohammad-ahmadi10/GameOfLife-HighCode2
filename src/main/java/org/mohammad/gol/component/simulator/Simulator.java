@@ -1,20 +1,16 @@
-package org.mohammad.gol.logic.simulator;
+package org.mohammad.gol.component.simulator;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import org.mohammad.app.command.CommandExecutor;
-import org.mohammad.gol.logic.AppStateManager;
-import org.mohammad.gol.logic.ApplicationState;
 import org.mohammad.gol.model.Simulation;
 import org.mohammad.gol.model.StandardRule;
-import org.mohammad.gol.state.SimulatorState;
 
 
 public class Simulator {
 
     private final Timeline timeline;
-    private final AppStateManager appStateManager;
     private Simulation simulation;
 
     private boolean isPlaying = false;
@@ -24,8 +20,7 @@ public class Simulator {
     private boolean isReset = true;
 
 
-    public Simulator(AppStateManager appStateManager, SimulatorState simulatorState, CommandExecutor commandExecutor){
-        this.appStateManager = appStateManager;
+    public Simulator( SimulatorState simulatorState, CommandExecutor commandExecutor){
         this.simulatorState = simulatorState;
         this.commandExecutor = commandExecutor;
         timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> handleStep()));
@@ -44,13 +39,13 @@ public class Simulator {
     private void reset() {
         isReset = true;
         stop();
-        appStateManager.getAppStateProperty().setValue(ApplicationState.EDITING);
+        this.simulatorState.getSimulating().setValue(false);
     }
 
     public void handleStep(){
         if(isReset){
             isReset = false;
-            appStateManager.getAppStateProperty().setValue(ApplicationState.SIMULATING);
+            this.simulatorState.getSimulating().setValue(true);
             this.simulation =  new Simulation(simulatorState.getCurBoard().getValue(), new StandardRule());
         }
             this.simulation.step();

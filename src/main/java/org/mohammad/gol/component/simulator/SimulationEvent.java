@@ -1,4 +1,4 @@
-package org.mohammad.gol.logic.simulator;
+package org.mohammad.gol.component.simulator;
 
 import org.mohammad.app.observable.event.Event;
 

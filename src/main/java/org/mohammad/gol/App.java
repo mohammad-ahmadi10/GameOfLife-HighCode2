@@ -4,113 +4,54 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.mohammad.app.command.CommandExecutor;
-import org.mohammad.gol.logic.*;
-import org.mohammad.gol.logic.editor.CursorEvent;
-import org.mohammad.gol.logic.editor.DrawModeEvent;
-import org.mohammad.gol.logic.editor.Editor;
-import org.mohammad.gol.logic.simulator.SimulationEvent;
-import org.mohammad.gol.logic.simulator.Simulator;
-import org.mohammad.gol.model.Board;
-import org.mohammad.gol.model.BoundedBoard;
-import org.mohammad.gol.state.EditorState;
-import org.mohammad.gol.state.SimulatorState;
-import org.mohammad.app.state.StateRegistry;
 import org.mohammad.app.observable.event.EventBus;
-import org.mohammad.gol.view.*;
-import org.mohammad.gol.viewmodel.*;
+import org.mohammad.app.state.StateRegistry;
+import org.mohammad.gol.component.ApplicationComponent;
+import org.mohammad.gol.component.ApplicationContext;
+import org.mohammad.gol.component.board.BoardAppComponent;
+import org.mohammad.gol.component.editor.EditorAppComponent;
+import org.mohammad.gol.component.infobar.InfobarComponent;
+import org.mohammad.gol.component.simulator.SimulatorAppComponent;
+import org.mohammad.gol.view.MainView;
 
-/**
- * JavaFX App
- */
+import java.util.LinkedList;
+import java.util.List;
+
 public class App extends Application {
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws Exception {
         EventBus eventBus = new EventBus();
-        Board initBoard = new BoundedBoard(20,15);
-
-
         StateRegistry stateRegistry = new StateRegistry();
         CommandExecutor commandExecutor = new CommandExecutor(stateRegistry);
-
-        AppStateManager appStateManager = new AppStateManager();
-        BoardViewModel boardViewModel = new BoardViewModel(initBoard);
-        InfoBarViewModel infoBarViewModel = new InfoBarViewModel();
-
-
-        SimulatorState simulatorState = new SimulatorState(initBoard);
-        stateRegistry.register(SimulatorState.class, simulatorState);
-
-        Simulator simulator = new Simulator(appStateManager, simulatorState ,commandExecutor);
-        eventBus.addListener(SimulationEvent.class, simulator::handleType);
-
-        simulatorState.getCurBoard().listenTo(simulationBoard ->
-                boardViewModel.getBoardProperty().setValue(simulationBoard)
-        );
-
-        EditorState editorState = new EditorState(initBoard);
-        stateRegistry.register(EditorState.class, editorState);
-
-        Editor editor = new Editor(editorState, commandExecutor);
-        editorState.getCellPosProperty().listenTo(cellPos ->
-                boardViewModel.getCellPosProperty().setValue(cellPos));
-
-        editorState.getBoardProperty().listenTo(editorBoard ->{
-            simulatorState.getCurBoard().setValue(editorBoard);
-            boardViewModel.getBoardProperty().setValue(editorBoard);
-        });
-
-        editorState.getCellPosProperty().listenTo(cellPos ->
-                infoBarViewModel.getCellPostionProperty().setValue(cellPos)
-        );
-        editorState.getCellStateProperty().listenTo(cellState ->
-                infoBarViewModel.getCellStateProperty().setValue(cellState)
-                );
-
-
-        appStateManager.getAppStateProperty().listenTo(editor::onAppStateChanged);
-        appStateManager.getAppStateProperty().listenTo(appState ->{
-            if (appState == ApplicationState.EDITING)
-                boardViewModel.getBoardProperty().setValue(editorState.getBoardProperty().getValue());
-        });
-
-
-
-        eventBus.addListener(CursorEvent.class, editor::handle);
-        eventBus.addListener(DrawModeEvent.class, editor::handle);
-
-
-
-
-
         MainView mainView = new MainView(eventBus);
 
-
-        /// ####### View Component #########
-        InfoBar infoBar = new InfoBar(infoBarViewModel);
-        Toolbar toolbar = new Toolbar(eventBus);
+        ApplicationContext context =
+                new ApplicationContext(eventBus,stateRegistry,commandExecutor,mainView, 20,15);
 
 
-        SimulationCanvas canvas = new SimulationCanvas(boardViewModel, eventBus);
-        mainView.setTop(toolbar);
-        mainView.setCenter(canvas);
-        mainView.setBottom(infoBar);
+        List<ApplicationComponent> components = new LinkedList<>();
+        components.add(new EditorAppComponent());
+        components.add(new SimulatorAppComponent());
+        components.add(new BoardAppComponent());
+        components.add(new InfobarComponent());
 
+        components.forEach(component -> component.initState(context));
+        components.forEach(component -> component.initComponent(context));
 
-
-        boardViewModel.getBoardProperty().listenTo(canvas::draw);
-        editorState.getCellPosProperty().listenTo(e -> canvas.draw(boardViewModel.getBoardProperty().getValue()));
-        editorState.getCellPosProperty().listenTo(infoBar::setCursorFormat);
 
 
 
         Scene scene = new Scene(mainView, 1200, 800);
         stage.setScene(scene);
         stage.show();
+
+
     }
+
+
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
-
 }

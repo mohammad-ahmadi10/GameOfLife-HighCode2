@@ -1,8 +1,7 @@
-package org.mohammad.gol.logic.editor;
+package org.mohammad.gol.component.editor;
 
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.CellState;
-import org.mohammad.gol.state.EditorState;
 import org.mohammad.app.observable.CellPostion;
 
 public class EditorBoardCommand implements EditorCommand {

@@ -3,8 +3,8 @@ package org.mohammad.gol.view;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
-import org.mohammad.gol.logic.editor.DrawModeEvent;
-import org.mohammad.gol.logic.simulator.SimulationEvent;
+import org.mohammad.gol.component.editor.DrawModeEvent;
+import org.mohammad.gol.component.simulator.SimulationEvent;
 import org.mohammad.gol.model.CellState;
 import org.mohammad.app.observable.event.EventBus;
 

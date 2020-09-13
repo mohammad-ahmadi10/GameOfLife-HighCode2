@@ -1,7 +1,6 @@
-package org.mohammad.gol.logic.editor;
+package org.mohammad.gol.component.editor;
 
 import org.mohammad.app.command.Command;
-import org.mohammad.gol.state.EditorState;
 
 public interface EditorCommand extends Command<EditorState> {
 

@@ -1,4 +1,4 @@
-package org.mohammad.gol.viewmodel;
+package org.mohammad.gol.component.infobar;
 
 import org.mohammad.gol.model.CellState;
 import org.mohammad.app.observable.CellPostion;

@@ -1,6 +1,5 @@
-package org.mohammad.gol.logic.editor;
+package org.mohammad.gol.component.editor;
 
-import org.mohammad.gol.state.EditorState;
 import org.mohammad.gol.model.CellState;
 
 public class CellStateCommand implements EditorCommand {
