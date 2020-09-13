@@ -3,6 +3,7 @@ package org.mohammad.gol.logic.simulator;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+import org.mohammad.app.command.CommandExecutor;
 import org.mohammad.gol.logic.AppStateManager;
 import org.mohammad.gol.logic.ApplicationState;
 import org.mohammad.gol.model.Simulation;
@@ -19,12 +20,14 @@ public class Simulator {
     private boolean isPlaying = false;
 
     private final SimulatorState simulatorState;
+    private CommandExecutor commandExecutor;
     private boolean isReset = true;
 
 
-    public Simulator(AppStateManager appStateManager, SimulatorState simulatorState){
+    public Simulator(AppStateManager appStateManager, SimulatorState simulatorState, CommandExecutor commandExecutor){
         this.appStateManager = appStateManager;
         this.simulatorState = simulatorState;
+        this.commandExecutor = commandExecutor;
         timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> handleStep()));
         timeline.setCycleCount(Timeline.INDEFINITE);
     }
@@ -52,9 +55,9 @@ public class Simulator {
         }
             this.simulation.step();
 
-            SimulatorStateCommand command = (state) ->
+            SimulatorCommand command = (state) ->
                     state.getCurBoard().setValue(this.simulation.getBoard());
-            command.execute(this.simulatorState);
+            commandExecutor.execute(command);
     }
 
 

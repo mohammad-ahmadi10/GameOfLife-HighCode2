@@ -5,7 +5,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import org.mohammad.gol.logic.editor.DrawModeEvent;
 import org.mohammad.gol.model.CellState;
-import org.mohammad.gol.utils.event.EventBus;
+import org.mohammad.app.observable.event.EventBus;
 
 public class MainView extends BorderPane {
 

@@ -1,8 +1,8 @@
 package org.mohammad.gol.viewmodel;
 
 import org.mohammad.gol.model.Board;
-import org.mohammad.gol.utils.CellPostion;
-import org.mohammad.gol.utils.Property;
+import org.mohammad.app.observable.CellPostion;
+import org.mohammad.app.observable.Property;
 
 public class BoardViewModel {
     private Board board;

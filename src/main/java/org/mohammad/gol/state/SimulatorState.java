@@ -1,7 +1,7 @@
 package org.mohammad.gol.state;
 
 import org.mohammad.gol.model.Board;
-import org.mohammad.gol.utils.Property;
+import org.mohammad.app.observable.Property;
 
 public class SimulatorState {
 

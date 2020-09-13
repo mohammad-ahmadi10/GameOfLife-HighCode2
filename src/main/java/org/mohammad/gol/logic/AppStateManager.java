@@ -1,6 +1,6 @@
 package org.mohammad.gol.logic;
 
-import org.mohammad.gol.utils.Property;
+import org.mohammad.app.observable.Property;
 
 public class AppStateManager {
 

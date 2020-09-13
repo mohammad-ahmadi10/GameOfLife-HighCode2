@@ -1,4 +1,4 @@
-package org.mohammad.gol.utils.event;
+package org.mohammad.app.observable.event;
 
 import java.util.HashMap;
 import java.util.LinkedList;
