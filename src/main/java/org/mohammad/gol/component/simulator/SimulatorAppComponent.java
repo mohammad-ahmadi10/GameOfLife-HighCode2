@@ -11,18 +11,18 @@ import org.mohammad.gol.component.editor.EditorState;
 public class SimulatorAppComponent implements ApplicationComponent {
     @Override
     public void initComponent(ApplicationContext context) {
-        SimulatorState simulatorState = context.getRegistry().getState(SimulatorState.class);
-        EditorState editorState = context.getRegistry().getState(EditorState.class);
-        BoardState boardState = context.getRegistry().getState(BoardState.class);
+        SimulatorState simulatorState = context.getStateRegistry().getState(SimulatorState.class);
+        EditorState editorState = context.getStateRegistry().getState(EditorState.class);
+        BoardState boardState = context.getStateRegistry().getState(BoardState.class);
 
         Simulator simulator = new Simulator(simulatorState ,context.getCommandExecutor());
         context.getEventBus().addListener(SimulationEvent.class, simulator::handleType);
 
 
-        editorState.getBoardProperty().listenTo(simulatorState.getCurBoard()::setValue);
+        editorState.getBoardProperty().listenTo(simulatorState.getCurBoard()::set);
         simulatorState.getCurBoard().listenTo(simulatorBoard -> {
-            if (simulatorState.getSimulating().getValue())
-                boardState.getBoard().setValue(simulatorBoard);
+            if (simulatorState.getSimulating().get())
+                boardState.getBoard().set(simulatorBoard);
             });
 
         }
@@ -31,6 +31,6 @@ public class SimulatorAppComponent implements ApplicationComponent {
     public void initState(ApplicationContext context) {
         Board board = new BoundedBoard(context.getBoardWith(), context.getBoardHeight());
         SimulatorState simulatorState = new SimulatorState(board);
-        context.getRegistry().register(SimulatorState.class, simulatorState);
+        context.getStateRegistry().register(SimulatorState.class, simulatorState);
     }
 }

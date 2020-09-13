@@ -9,7 +9,7 @@ public class SimulatorState {
     private Property<Boolean> simulating  =new Property<>(false);
 
     public SimulatorState(Board board) {
-        curBoard.setValue(board);
+        curBoard.set(board);
     }
 
 

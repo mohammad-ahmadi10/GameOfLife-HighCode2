@@ -13,6 +13,6 @@ public class CellStateCommand implements EditorCommand {
 
     @Override
     public void execute(EditorState editorState) {
-            editorState.getCellStateProperty().setValue(newCellState);
+            editorState.getCellStatePro().set(newCellState);
     }
 }

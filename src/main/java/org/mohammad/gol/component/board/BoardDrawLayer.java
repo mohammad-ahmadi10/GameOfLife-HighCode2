@@ -17,7 +17,7 @@ public class BoardDrawLayer extends AbstractDrawLayer {
 
     @Override
     public void draw(GraphicsContext gc) {
-        Board board = boardState.getBoard().getValue();
+        Board board = boardState.getBoard().get();
         gc.setFill(Color.BLACK);
         for (int x = 0; x <= board.getWidth(); x++) {
             for (int y = 0; y <= board.getHeight(); y++) {

@@ -39,19 +39,19 @@ public class Simulator {
     private void reset() {
         isReset = true;
         stop();
-        this.simulatorState.getSimulating().setValue(false);
+        this.simulatorState.getSimulating().set(false);
     }
 
     public void handleStep(){
         if(isReset){
             isReset = false;
-            this.simulatorState.getSimulating().setValue(true);
-            this.simulation =  new Simulation(simulatorState.getCurBoard().getValue(), new StandardRule());
+            this.simulatorState.getSimulating().set(true);
+            this.simulation =  new Simulation(simulatorState.getCurBoard().get(), new StandardRule());
         }
             this.simulation.step();
 
             SimulatorCommand command = (state) ->
-                    state.getCurBoard().setValue(this.simulation.getBoard());
+                    state.getCurBoard().set(this.simulation.getBoard());
             commandExecutor.execute(command);
     }
 

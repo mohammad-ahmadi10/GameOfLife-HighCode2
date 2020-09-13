@@ -33,7 +33,7 @@ public class ApplicationContext {
         return eventBus;
     }
 
-    public StateRegistry getRegistry() {
+    public StateRegistry getStateRegistry() {
         return registry;
     }
 

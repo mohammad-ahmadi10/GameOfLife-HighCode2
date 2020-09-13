@@ -11,12 +11,13 @@ public class EditorState {
     private final Property<CellPostion> cellPosProperty = new Property<>();
     private final Property<Board> boardProperty = new Property<>();
 
+    private final Property<Boolean> editInProgress = new Property<>(false);
+    private Property<Edit> edit = new Property<>();
     public EditorState(Board board) {
-        boardProperty.setValue(board);
+        boardProperty.set(board);
     }
 
-
-    public Property<CellState> getCellStateProperty() {
+    public Property<CellState> getCellStatePro() {
         return cellStateProperty;
     }
 
@@ -28,5 +29,11 @@ public class EditorState {
         return boardProperty;
     }
 
+    public Property<Boolean> getEditInProgress() {
+        return editInProgress;
+    }
 
+    public Property<Edit> getEdit() {
+        return edit;
+    }
 }

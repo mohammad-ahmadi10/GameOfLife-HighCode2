@@ -15,7 +15,7 @@ public class GridDrawLayer extends AbstractDrawLayer {
     
     @Override
     public void draw(GraphicsContext gc) {
-        Board board = boardState.getBoard().getValue();
+        Board board = boardState.getBoard().get();
         gc.setStroke(Color.GRAY);
         gc.setLineWidth(0.05);
         for (int x = 0; x <= board.getWidth(); x++) {

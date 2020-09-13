@@ -20,7 +20,7 @@ public class Property<T> {
         propertyListenerList.add(propertyListener);
     }
 
-    public void setValue(T value){
+    public void set(T value){
             this.value = value;
             notifyAllListener(this.value);
     }
@@ -34,7 +34,7 @@ public class Property<T> {
         propertyListenerList.forEach(propertyListener -> propertyListener.handle(value));
     }
 
-    public T getValue() {
+    public T get() {
         return this.value;
     }
 

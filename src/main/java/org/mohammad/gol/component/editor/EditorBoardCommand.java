@@ -1,24 +1,42 @@
 package org.mohammad.gol.component.editor;
 
+import org.mohammad.app.observable.CellPostion;
 import org.mohammad.gol.model.Board;
 import org.mohammad.gol.model.CellState;
-import org.mohammad.app.observable.CellPostion;
 
-public class EditorBoardCommand implements EditorCommand {
+public class EditorBoardCommand implements UndoableEditorCommand {
 
-    private final CellPostion cellPostion;
-    private final CellState cellState;
+    private Edit edit;
 
-    public EditorBoardCommand(CellPostion cellPostion, CellState cellState) {
-        this.cellPostion = cellPostion;
-        this.cellState = cellState;
+    public EditorBoardCommand(Edit edit) {
+        this.edit = new Edit(edit);
+
     }
 
     @Override
     public void execute(EditorState editorState) {
-        Board board = editorState.getBoardProperty().getValue();
-        board.setState(cellPostion.getPosX(),cellPostion.getPosY(),cellState);
-        editorState.getBoardProperty().setValue(board);
+        Board board = editorState.getBoardProperty().get();
+        edit.forEach(change -> {
+            CellPostion cellPostion = change.getCellPostion();
+            CellState newCellState = change.getNewCellState();
+
+            board.setState(cellPostion.getPosX(),cellPostion.getPosY(),newCellState);
+            editorState.getBoardProperty().set(board);
+        });
+
+
+    }
+
+    @Override
+    public void undo(EditorState editorState) {
+        Board board = editorState.getBoardProperty().get();
+        edit.forEach(change -> {
+            CellPostion cellPostion = change.getCellPostion();
+            CellState prevCellState = change.getPrevCellState();
+
+            board.setState(cellPostion.getPosX(),cellPostion.getPosY(),prevCellState);
+            editorState.getBoardProperty().set(board);
+        });
     }
 
 }

@@ -7,7 +7,7 @@ public class BoardState {
     Property<Board> board = new Property<>();
 
     public BoardState(Board board) {
-        this.board.setValue(board);
+        this.board.set(board);
     }
 
     public Property<Board> getBoard() {

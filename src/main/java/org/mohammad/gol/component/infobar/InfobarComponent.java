@@ -10,11 +10,12 @@ public class InfobarComponent implements ApplicationComponent {
 
     @Override
     public void initComponent(ApplicationContext context) {
-        EditorState editorState = context.getRegistry().getState(EditorState.class);
+        EditorState editorState = context.getStateRegistry().getState(EditorState.class);
 
         InfoBarViewModel infoBarViewModel = new InfoBarViewModel();
 
-        editorState.getCellPosProperty().listenTo(infoBarViewModel.getCellPostionProperty()::setValue);
+        editorState.getCellPosProperty().listenTo(infoBarViewModel.getCellPostionProperty()::set);
+        editorState.getCellStatePro().listenTo(infoBarViewModel.getCellStateProperty()::set);
         InfoBar infoBar = new InfoBar(infoBarViewModel);
 
         context.getMainView().setBottom(infoBar);

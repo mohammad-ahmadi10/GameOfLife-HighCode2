@@ -10,7 +10,7 @@ public class BoardAppComponent implements ApplicationComponent {
 
     @Override
     public void initComponent(ApplicationContext context) {
-        BoardState boardState = context.getRegistry().getState(BoardState.class);
+        BoardState boardState = context.getStateRegistry().getState(BoardState.class);
 
         BoardDrawLayer boardDrawLayer = new BoardDrawLayer(boardState);
         GridDrawLayer gridDrawLayer = new GridDrawLayer(boardState);
@@ -25,7 +25,7 @@ public class BoardAppComponent implements ApplicationComponent {
     public void initState(ApplicationContext context) {
         Board board = new BoundedBoard(context.getBoardWith(), context.getBoardHeight());
         BoardState boardState = new BoardState(board);
-        context.getRegistry().register(BoardState.class, boardState);
+        context.getStateRegistry().register(BoardState.class, boardState);
 
     }
 }

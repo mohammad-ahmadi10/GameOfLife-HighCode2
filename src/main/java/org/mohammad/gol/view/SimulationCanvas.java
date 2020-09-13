@@ -30,8 +30,9 @@ public class SimulationCanvas extends Pane {
         this.eventBus = eventBus;
 
         this.canvas = new Canvas(400,400);
-        this.canvas.setOnMousePressed(this::handleDraw);
-        this.canvas.setOnMouseDragged(this::handleDraw);
+        this.canvas.setOnMousePressed(this::handlePressed);
+        this.canvas.setOnMouseReleased(this::handleReleased);
+        this.canvas.setOnMouseDragged(this::handleMoved);
         this.canvas.setOnMouseMoved(this::handleMoved);
 
 
@@ -43,6 +44,43 @@ public class SimulationCanvas extends Pane {
         this.canvas.heightProperty().bind(this.heightProperty());
 
         this.getChildren().add(this.canvas);
+    }
+
+    private void handlePressed(MouseEvent event) {
+        CellPostion cellPos = simCoordinate(event);
+        eventBus.emit(new CursorEvent(CursorEvent.Type.PRESSED, cellPos));
+
+    }
+
+    private void handleReleased(MouseEvent event) {
+        CellPostion cellPos = simCoordinate(event);
+        eventBus.emit(new CursorEvent(CursorEvent.Type.RELEASED, cellPos));
+
+    }
+
+    private void handleMoved(MouseEvent event) {
+
+        CellPostion cellPos = simCoordinate(event);
+
+        if( (cellPos.getPosX() < 0 || cellPos.getPosX() >= 20 )||
+                (cellPos.getPosY() < 0 || cellPos.getPosY() >= 15))
+            return;
+        eventBus.emit(new CursorEvent(CursorEvent.Type.CURSOR_MOVED, cellPos));
+
+    }
+
+    private CellPostion simCoordinate(MouseEvent event){
+        double  mouseX = event.getX();
+        double  mouseY =  event.getY();
+
+        try {
+            Point2D simCord = this.affine.inverseTransform(mouseX, mouseY);
+
+            return new CellPostion((int) simCord.getX(), (int) simCord.getY());
+
+        } catch (NonInvertibleTransformException e) {
+            throw new RuntimeException("Non invertable transform");
+        }
     }
 
     public void addDrawLayers(DrawLayer drawLayer){
@@ -60,38 +98,7 @@ public class SimulationCanvas extends Pane {
     }
 
 
-    private void handleMoved(MouseEvent event) {
 
-            CellPostion cellPos = simCoordinate(event);
-
-            if( (cellPos.getPosX() < 0 || cellPos.getPosX() >= 20 )||
-                (cellPos.getPosY() < 0 || cellPos.getPosY() >= 15))
-                return;
-            eventBus.emit(new CursorEvent(CursorEvent.Type.CURSOR_MOVED, cellPos));
-
-    }
-
-    private void handleDraw(MouseEvent event) {
-        CellPostion cellPos = simCoordinate(event);
-        eventBus.emit(new CursorEvent(CursorEvent.Type.PRESSED, cellPos));
-
-    }
-
-
-
-    private CellPostion simCoordinate(MouseEvent event){
-        double  mouseX = event.getX();
-        double  mouseY =  event.getY();
-
-        try {
-            Point2D simCord = this.affine.inverseTransform(mouseX, mouseY);
-
-            return new CellPostion((int) simCord.getX(), (int) simCord.getY());
-
-        } catch (NonInvertibleTransformException e) {
-            throw new RuntimeException("Non invertable transform");
-        }
-    }
 
 
 

@@ -7,7 +7,8 @@ public class CursorEvent implements Event {
 
     public enum Type{
         CURSOR_MOVED,
-        PRESSED
+        PRESSED,
+        RELEASED
     }
 
     private Type type;

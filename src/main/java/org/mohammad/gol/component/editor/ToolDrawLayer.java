@@ -17,7 +17,7 @@ public class ToolDrawLayer extends AbstractDrawLayer {
 
     @Override
     public void draw(GraphicsContext gc) {
-        CellPostion cellPos = editorState.getCellPosProperty().getValue();
+        CellPostion cellPos = editorState.getCellPosProperty().get();
         if(cellPos != null){
             gc.setFill(new Color(0.3,0.3,0.3,0.7));
             gc.fillRect(cellPos.getPosX(), cellPos.getPosY(), 1,1);
